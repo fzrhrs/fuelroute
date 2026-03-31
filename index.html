@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FuelRoute — Trip Fuel Estimator</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a; --surface: #111111; --border: #222222;
+    --accent: #e8ff47; --accent2: #ff6b35; --text: #f0f0f0;
+    --muted: #555; --panel: #161616;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image: linear-gradient(rgba(232,255,71,.03) 1px,transparent 1px), linear-gradient(90deg,rgba(232,255,71,.03) 1px,transparent 1px);
+    background-size:60px 60px;
+  }
+  .container { position:relative; z-index:1; max-width:900px; margin:0 auto; padding:40px 20px 80px; }
+  header { display:flex; align-items:flex-end; gap:16px; margin-bottom:60px; }
+  .logo { font-family:'Bebas Neue',sans-serif; font-size:72px; line-height:1; letter-spacing:2px; }
+  .logo span { color:var(--accent); }
+  .tagline { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:3px; margin-bottom:10px; line-height:1.6; }
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:2px; padding:36px; margin-bottom:24px; position:relative; }
+  .card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--accent),var(--accent2)); }
+  .section-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--accent); margin-bottom:24px; }
+  .route-inputs { position:relative; }
+  .route-line { position:absolute; left:17px; top:44px; bottom:44px; width:2px; background:linear-gradient(180deg,var(--accent),var(--accent2)); z-index:1; }
+  .input-row { display:flex; align-items:center; gap:16px; padding:6px 0; }
+  .dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; z-index:2; position:relative; }
+  .dot-from { background:var(--accent); box-shadow:0 0 10px rgba(232,255,71,.5); }
+  .dot-to   { background:var(--accent2); box-shadow:0 0 10px rgba(255,107,53,.5); border-radius:2px; }
+  .input-group { flex:1; position:relative; }
+  .input-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  input[type="text"], input[type="number"], select {
+    width:100%; background:var(--surface); border:1px solid var(--border); border-radius:2px;
+    color:var(--text); font-family:'DM Sans',sans-serif; font-size:15px; padding:12px 14px;
+    outline:none; transition:border-color .2s,box-shadow .2s; -webkit-appearance:none;
+  }
+  input:focus, select:focus { border-color:var(--accent); box-shadow:0 0 0 2px rgba(232,255,71,.1); }
+  select {
+    cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; padding-right:36px;
+  }
+  /* Fuel badge */
+  .fuel-badge { display:none; align-items:center; gap:8px; margin-top:10px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px; }
+  .fuel-badge.show { display:flex; }
+  .badge-pill { padding:4px 10px; border-radius:2px; font-size:11px; font-weight:500; letter-spacing:1px; }
+  .pill-ron95  { background:rgba(232,255,71,.15); color:var(--accent);  border:1px solid rgba(232,255,71,.3); }
+  .pill-ron97  { background:rgba(255,107,53,.15); color:var(--accent2); border:1px solid rgba(255,107,53,.3); }
+  .pill-diesel { background:rgba(100,180,255,.15); color:#64b4ff;       border:1px solid rgba(100,180,255,.3); }
+  .fuel-price-note { color:var(--muted); }
+  /* Condition grid */
+  .cond-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-top:8px; }
+  @media(max-width:640px){ .cond-grid{grid-template-columns:repeat(3,1fr);} .logo{font-size:48px;} }
+  @media(max-width:400px){ .cond-grid{grid-template-columns:repeat(2,1fr);} }
+  .cond-btn {
+    background:var(--surface); border:1px solid var(--border); border-radius:2px; color:var(--muted);
+    font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; padding:12px 8px 10px;
+    cursor:pointer; transition:all .2s; display:flex; flex-direction:column; align-items:center;
+    gap:5px; text-align:center; line-height:1.3; width:100%;
+  }
+  .cond-btn:hover { border-color:var(--accent); color:var(--text); }
+  .cond-btn.active { border-color:var(--accent); background:rgba(232,255,71,.08); color:var(--accent); }
+  .cond-emoji { font-size:20px; }
+  .cond-name  { font-weight:600; font-size:11px; }
+  .cond-desc  { font-size:9px; font-family:'DM Mono',monospace; letter-spacing:.5px; color:var(--muted); display:block; }
+  .cond-btn.active .cond-desc { color:rgba(232,255,71,.5); }
+  /* Manual */
+  .manual-wrap { display:none; margin-top:16px; }
+  /* Button */
+  .btn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:16px;
+    background:var(--accent); color:#0a0a0a; border:none; border-radius:2px;
+    font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:3px;
+    cursor:pointer; transition:background .2s,transform .1s; margin-top:32px; }
+  .btn:hover { background:#d4eb30; }
+  .btn:active { transform:scale(.99); }
+  .btn:disabled { opacity:.4; cursor:not-allowed; }
+  .spinner { width:18px; height:18px; border:2px solid #0a0a0a; border-top-color:transparent; border-radius:50%; animation:spin .7s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  /* Results */
+  .results { display:none; animation:fadeUp .4s ease both; }
+  .results.show { display:block; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  .result-hero { background:var(--panel); border:1px solid var(--border); border-radius:2px; padding:36px; margin-bottom:16px; position:relative; overflow:hidden; }
+  .result-hero::after { content:'⛽'; position:absolute; right:30px; top:50%; transform:translateY(-50%); font-size:80px; opacity:.06; pointer-events:none; }
+  .result-value { font-family:'Bebas Neue',sans-serif; font-size:80px; line-height:1; color:var(--accent); letter-spacing:2px; }
+  .result-unit  { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .route-display { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+  .route-chip { font-family:'DM Mono',monospace; font-size:12px; padding:6px 12px; border-radius:2px; letter-spacing:1px; }
+  .chip-from  { background:rgba(232,255,71,.1); color:var(--accent); }
+  .chip-arrow { color:var(--muted); font-size:18px; }
+  .chip-to    { background:rgba(255,107,53,.1); color:var(--accent2); }
+  .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  @media(max-width:640px){ .stats-grid{grid-template-columns:repeat(2,1fr);} }
+  .stat-box { background:var(--panel); border:1px solid var(--border); border-radius:2px; padding:20px; }
+  .stat-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .stat-value { font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--text); letter-spacing:1px; line-height:1.1; }
+  .stat-sub   { font-size:11px; color:var(--muted); margin-top:2px; }
+  .stat-cost  { border-color:rgba(232,255,71,.25)!important; }
+  .stat-cost .stat-label,.stat-cost .stat-value { color:var(--accent); }
+  /* Error */
+  .error-msg { display:none; background:rgba(255,80,80,.08); border:1px solid rgba(255,80,80,.2); border-radius:2px; padding:14px 18px; color:#ff8080; font-family:'DM Mono',monospace; font-size:12px; letter-spacing:1px; margin-top:16px; }
+  .error-msg.show { display:block; }
+  /* Autocomplete */
+  .autocomplete-wrap { position:relative; }
+  .suggestions { position:absolute; top:100%; left:0; right:0; background:#1a1a1a; border:1px solid var(--border); border-top:none; border-radius:0 0 2px 2px; z-index:100; max-height:200px; overflow-y:auto; display:none; }
+  .suggestions.open { display:block; }
+  .suggestion-item { padding:10px 14px; font-size:13px; cursor:pointer; color:var(--text); border-bottom:1px solid var(--border); transition:background .15s; }
+  .suggestion-item:last-child { border-bottom:none; }
+  .suggestion-item:hover { background:rgba(232,255,71,.07); }
+  .disclaimer { font-family:'DM Mono',monospace; font-size:10px; color:#333; text-align:center; margin-top:40px; letter-spacing:1px; line-height:1.8; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="logo">Fuel<span>Route</span></div>
+    <div class="tagline">One-way trip<br>fuel consumption estimator</div>
+  </header>
+
+  <div class="card">
+    <div class="section-label">// Route</div>
+
+    <div class="route-inputs">
+      <div class="route-line"></div>
+      <div class="input-row">
+        <div class="dot dot-from"></div>
+        <div class="input-group autocomplete-wrap">
+          <div class="input-label">From</div>
+          <input type="text" id="fromInput" placeholder="e.g. Kota Kinabalu" autocomplete="off">
+          <div class="suggestions" id="fromSugg"></div>
+          <input type="hidden" id="fromLat"><input type="hidden" id="fromLon">
+        </div>
+      </div>
+      <div class="input-row" style="margin-top:16px">
+        <div class="dot dot-to"></div>
+        <div class="input-group autocomplete-wrap">
+          <div class="input-label">To</div>
+          <input type="text" id="toInput" placeholder="e.g. Keningau" autocomplete="off">
+          <div class="suggestions" id="toSugg"></div>
+          <input type="hidden" id="toLat"><input type="hidden" id="toLon">
+        </div>
+      </div>
+    </div>
+
+    <!-- Car -->
+    <div style="margin-top:28px">
+      <div class="input-label">What car are you driving?</div>
+      <select id="carType" onchange="onCarChange()">
+        <option value="">— Select your car —</option>
+        <optgroup label="Perodua">
+          <option value="axia">Perodua Axia / Bezza</option>
+          <option value="myvi">Perodua Myvi</option>
+          <option value="ativa">Perodua Ativa / Aruz</option>
+        </optgroup>
+        <optgroup label="Proton">
+          <option value="saga">Proton Saga / Iriz</option>
+          <option value="x50">Proton X50</option>
+          <option value="x70">Proton X70</option>
+        </optgroup>
+        <optgroup label="Honda">
+          <option value="city">Honda City / Jazz</option>
+          <option value="civic">Honda Civic</option>
+          <option value="crv">Honda CR-V / HR-V</option>
+        </optgroup>
+        <optgroup label="Toyota">
+          <option value="vios">Toyota Vios / Yaris</option>
+          <option value="camry">Toyota Camry</option>
+          <option value="hilux">Toyota Hilux (Diesel)</option>
+          <option value="fortuner_d">Toyota Fortuner (Diesel)</option>
+          <option value="alphard">Toyota Alphard / Vellfire</option>
+          <option value="hiace">Toyota HiAce (Diesel)</option>
+        </optgroup>
+        <optgroup label="Mitsubishi / Nissan">
+          <option value="triton">Mitsubishi Triton (Diesel)</option>
+          <option value="navara">Nissan Navara (Diesel)</option>
+        </optgroup>
+        <optgroup label="Other / Large">
+          <option value="4wd_d">Large 4WD / Pickup (Diesel)</option>
+          <option value="custom_ron95">Other — RON95</option>
+          <option value="custom_ron97">Other — RON97</option>
+          <option value="custom_diesel">Other — Diesel</option>
+        </optgroup>
+      </select>
+      <!-- Fuel type badge -->
+      <div class="fuel-badge" id="fuelBadge">
+        <span class="badge-pill" id="fuelPill"></span>
+        <span class="fuel-price-note" id="fuelNote"></span>
+      </div>
+    </div>
+
+    <!-- Manual consumption (custom only) -->
+    <div class="manual-wrap" id="manualWrap">
+      <div class="input-label">Fuel consumption (L / 100 km)</div>
+      <input type="number" id="consumption" value="10" min="1" max="50" step="0.1" placeholder="e.g. 10">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:6px;letter-spacing:1px;">Check your dashboard trip computer or car manual.</div>
+    </div>
+
+    <!-- Driving condition (single merged selector) -->
+    <div style="display:none;margin-top:24px" id="condWrap">
+      <div class="input-label">Driving Condition &amp; Road Type</div>
+      <div class="cond-grid">
+        <button class="cond-btn" data-c="city" onclick="pickCond(this)">
+          <span class="cond-emoji">🏙️</span><span class="cond-name">City</span>
+          <span class="cond-desc">Stop-go traffic, flat roads</span>
+        </button>
+        <button class="cond-btn" data-c="mixed" onclick="pickCond(this)">
+          <span class="cond-emoji">🛣️</span><span class="cond-name">Mixed</span>
+          <span class="cond-desc">Town roads, some open road</span>
+        </button>
+        <button class="cond-btn active" data-c="highway" onclick="pickCond(this)">
+          <span class="cond-emoji">🚗</span><span class="cond-name">Highway</span>
+          <span class="cond-desc">Expressway, flat &amp; free-flowing</span>
+        </button>
+        <button class="cond-btn" data-c="hilly" onclick="pickCond(this)">
+          <span class="cond-emoji">⛰️</span><span class="cond-name">Hilly</span>
+          <span class="cond-desc">Inland, rolling hills, Sabah roads</span>
+        </button>
+        <button class="cond-btn" data-c="mountain" onclick="pickCond(this)">
+          <span class="cond-emoji">🏔️</span><span class="cond-name">Mountainous</span>
+          <span class="cond-desc">Cameron, Genting, KK–Keningau</span>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn" id="calcBtn" onclick="calculate()">⛽ CALCULATE FUEL</button>
+    <div class="error-msg" id="errMsg"></div>
+  </div>
+
+  <!-- Results -->
+  <div class="results" id="results">
+    <div class="result-hero card" style="margin-bottom:16px">
+      <div class="section-label">// Fuel Required</div>
+      <div class="route-display">
+        <span class="route-chip chip-from" id="lblFrom">—</span>
+        <span class="chip-arrow">→</span>
+        <span class="route-chip chip-to"   id="lblTo">—</span>
+      </div>
+      <div class="result-value" id="resLitres">—</div>
+      <div class="result-unit">Litres estimated</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-label">Distance</div>
+        <div class="stat-value" id="resDist">—</div>
+        <div class="stat-sub">kilometres</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Consumption Rate</div>
+        <div class="stat-value" id="resRate">—</div>
+        <div class="stat-sub">L / 100 km</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Fuel Type</div>
+        <div class="stat-value" id="resFuelType">—</div>
+        <div class="stat-sub" id="resFuelPrice">—</div>
+      </div>
+      <div class="stat-box stat-cost">
+        <div class="stat-label">Est. Fuel Cost</div>
+        <div class="stat-value" id="resCost">—</div>
+        <div class="stat-sub">Malaysian Ringgit</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    Route distance via OSRM · Location search via OpenStreetMap (Malaysia only)<br>
+    Fuel prices: RON95 RM2.05 · RON97 RM3.40 · Diesel RM2.15 · Estimates are approximate.
+  </div>
+
+</div>
+<script>
+// ── Fuel prices & labels ──────────────────────────────────────────────────
+const PRICE = { ron95:2.05, ron97:3.40, diesel:2.15 };
+const LABEL = { ron95:'RON95', ron97:'RON97', diesel:'Diesel' };
+const PCLS  = { ron95:'pill-ron95', ron97:'pill-ron97', diesel:'pill-diesel' };
+
+// ── Car data: fuel type + consumption per condition ───────────────────────
+// Conditions: 0=city  1=mixed  2=highway  3=hilly  4=mountain
+const CARS = {
+  axia:      {f:'ron95',  r:[10.5, 8.5,  7.0, 11.5, 14.0]},
+  myvi:      {f:'ron95',  r:[13.0,10.5,  8.5, 13.5, 16.5]},
+  ativa:     {f:'ron95',  r:[14.5,12.0,  9.5, 15.0, 18.0]},
+  saga:      {f:'ron95',  r:[13.0,10.5,  8.5, 13.5, 16.5]},
+  x50:       {f:'ron95',  r:[14.0,11.5,  9.0, 14.5, 17.5]},
+  x70:       {f:'ron97',  r:[15.5,13.0, 10.5, 16.0, 19.5]},
+  city:      {f:'ron95',  r:[13.0,10.5,  8.5, 13.5, 16.5]},
+  civic:     {f:'ron97',  r:[14.0,11.5,  9.0, 14.5, 17.5]},
+  crv:       {f:'ron97',  r:[15.5,13.0, 10.5, 16.0, 19.5]},
+  vios:      {f:'ron95',  r:[13.5,11.0,  9.0, 14.0, 17.0]},
+  camry:     {f:'ron97',  r:[15.0,12.5, 10.0, 15.5, 19.0]},
+  hilux:     {f:'diesel', r:[14.0,11.5,  9.5, 15.0, 18.5]},
+  fortuner_d:{f:'diesel', r:[14.5,12.0, 10.0, 15.5, 19.0]},
+  alphard:   {f:'ron95',  r:[18.0,15.5, 13.0, 19.5, 23.0]},
+  hiace:     {f:'diesel', r:[14.0,11.5,  9.5, 15.0, 18.5]},
+  triton:    {f:'diesel', r:[15.0,12.5, 10.5, 16.0, 19.5]},
+  navara:    {f:'diesel', r:[14.5,12.0, 10.0, 15.5, 19.0]},
+  '4wd_d':   {f:'diesel', r:[20.0,17.0, 14.0, 21.5, 25.5]},
+};
+const CI = {city:0, mixed:1, highway:2, hilly:3, mountain:4};
+
+let cond = 'highway';
+
+function pickCond(btn) {
+  document.querySelectorAll('.cond-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  cond = btn.dataset.c;
+}
+
+function onCarChange() {
+  const val = document.getElementById('carType').value;
+  const condWrap   = document.getElementById('condWrap');
+  const manualWrap = document.getElementById('manualWrap');
+  const badge      = document.getElementById('fuelBadge');
+  const pill       = document.getElementById('fuelPill');
+  const note       = document.getElementById('fuelNote');
+
+  if (!val) { condWrap.style.display='none'; manualWrap.style.display='none'; badge.classList.remove('show'); return; }
+
+  condWrap.style.display = 'block';
+
+  let ft;
+  if (val.startsWith('custom_')) {
+    ft = val.replace('custom_','');
+    manualWrap.style.display = 'block';
+  } else {
+    ft = CARS[val].f;
+    manualWrap.style.display = 'none';
+  }
+
+  pill.className = 'badge-pill ' + PCLS[ft];
+  pill.textContent = LABEL[ft];
+  note.textContent = 'RM' + PRICE[ft].toFixed(2) + ' / litre';
+  badge.classList.add('show');
+}
+
+function getCalcInputs() {
+  const val = document.getElementById('carType').value;
+  if (!val) throw new Error('Please select your car.');
+  let l100, ft;
+  if (val.startsWith('custom_')) {
+    ft   = val.replace('custom_','');
+    l100 = parseFloat(document.getElementById('consumption').value);
+    if (!l100||l100<1) throw new Error('Please enter your fuel consumption (L/100 km).');
+  } else {
+    ft   = CARS[val].f;
+    l100 = CARS[val].r[CI[cond]];
+  }
+  return {l100, ft};
+}
+
+// ── Autocomplete ──────────────────────────────────────────────────────────
+let debT;
+function setupAC(inId, suId, latId, lonId) {
+  const inp = document.getElementById(inId);
+  const box = document.getElementById(suId);
+  inp.addEventListener('input', ()=>{
+    clearTimeout(debT);
+    const q = inp.value.trim();
+    if(q.length<3){box.classList.remove('open');return;}
+    debT = setTimeout(()=>fetchAC(q,box,inp,latId,lonId), 350);
+  });
+  inp.addEventListener('blur', ()=>setTimeout(()=>box.classList.remove('open'),200));
+}
+async function fetchAC(q, box, inp, latId, lonId) {
+  try {
+    const d = await (await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&countrycodes=my`,{headers:{'Accept-Language':'en'}})).json();
+    box.innerHTML='';
+    if(!d.length){box.classList.remove('open');return;}
+    d.forEach(p=>{
+      const div=document.createElement('div'); div.className='suggestion-item';
+      div.textContent=p.display_name.split(',').slice(0,3).join(', ');
+      div.addEventListener('mousedown',()=>{
+        inp.value=div.textContent;
+        document.getElementById(latId).value=p.lat;
+        document.getElementById(lonId).value=p.lon;
+        box.classList.remove('open');
+      });
+      box.appendChild(div);
+    });
+    box.classList.add('open');
+  } catch(e){box.classList.remove('open');}
+}
+setupAC('fromInput','fromSugg','fromLat','fromLon');
+setupAC('toInput',  'toSugg',  'toLat',  'toLon');
+
+// ── OSRM routing ──────────────────────────────────────────────────────────
+async function getDist(fLat,fLon,tLat,tLon) {
+  const d = await (await fetch(`https://router.project-osrm.org/route/v1/driving/${fLon},${fLat};${tLon},${tLat}?overview=false`)).json();
+  if(d.code!=='Ok'||!d.routes.length) throw new Error('Could not find a driving route between these locations.');
+  return d.routes[0].distance/1000;
+}
+
+async function geocode(inId, latId, lonId) {
+  const lat=document.getElementById(latId).value, lon=document.getElementById(lonId).value;
+  if(lat&&lon) return {lat:+lat,lon:+lon};
+  const q=document.getElementById(inId).value.trim();
+  if(!q) throw new Error(`Please enter a ${inId==='fromInput'?'starting point':'destination'}.`);
+  const d=await (await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1&countrycodes=my`,{headers:{'Accept-Language':'en'}})).json();
+  if(!d.length) throw new Error(`Could not find: "${q}"`);
+  return {lat:+d[0].lat, lon:+d[0].lon};
+}
+
+// ── Calculate ──────────────────────────────────────────────────────────────
+async function calculate() {
+  const btn=document.getElementById('calcBtn'), err=document.getElementById('errMsg'), res=document.getElementById('results');
+  btn.disabled=true; btn.innerHTML='<div class="spinner"></div> ROUTING…';
+  err.classList.remove('show'); res.classList.remove('show');
+  try {
+    const {l100,ft} = getCalcInputs();
+    const from = await geocode('fromInput','fromLat','fromLon');
+    const to   = await geocode('toInput',  'toLat',  'toLon');
+    const km   = await getDist(from.lat,from.lon,to.lat,to.lon);
+    const litres = (km * l100) / 100;
+    const cost   = litres * PRICE[ft];
+
+    document.getElementById('resLitres').textContent  = litres.toFixed(2);
+    document.getElementById('resDist').textContent    = km.toFixed(1);
+    document.getElementById('resRate').textContent    = l100.toFixed(1);
+    document.getElementById('resFuelType').textContent= LABEL[ft];
+    document.getElementById('resFuelPrice').textContent='RM'+PRICE[ft].toFixed(2)+' / litre';
+    document.getElementById('resCost').textContent    = 'RM '+cost.toFixed(2);
+    document.getElementById('lblFrom').textContent    = document.getElementById('fromInput').value.split(',')[0];
+    document.getElementById('lblTo').textContent      = document.getElementById('toInput').value.split(',')[0];
+    res.classList.add('show');
+    res.scrollIntoView({behavior:'smooth',block:'nearest'});
+  } catch(e) {
+    err.textContent='⚠ '+e.message; err.classList.add('show');
+  } finally {
+    btn.disabled=false; btn.innerHTML='⛽ CALCULATE FUEL';
+  }
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElementById('calcBtn').disabled)calculate();});
+</script>
+</body>
+</html>
