@@ -7,112 +7,137 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0a; --surface: #111111; --border: #222222;
-    --accent: #e8ff47; --accent2: #ff6b35; --text: #f0f0f0;
-    --muted: #555; --panel: #161616;
+    --bg:#0a0a0a; --surface:#111111; --border:#222222;
+    --accent:#e8ff47; --accent2:#ff6b35; --text:#f0f0f0;
+    --muted:#555; --panel:#161616; --blue:#64b4ff;
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; }
-  body::before {
-    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
-    background-image: linear-gradient(rgba(232,255,71,.03) 1px,transparent 1px), linear-gradient(90deg,rgba(232,255,71,.03) 1px,transparent 1px);
-    background-size:60px 60px;
-  }
-  .container { position:relative; z-index:1; max-width:900px; margin:0 auto; padding:40px 20px 80px; }
-  header { display:flex; align-items:flex-end; gap:16px; margin-bottom:60px; }
-  .logo { font-family:'Bebas Neue',sans-serif; font-size:72px; line-height:1; letter-spacing:2px; }
-  .logo span { color:var(--accent); }
-  .tagline { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:3px; margin-bottom:10px; line-height:1.6; }
-  .card { background:var(--panel); border:1px solid var(--border); border-radius:2px; padding:36px; margin-bottom:24px; position:relative; }
-  .card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--accent),var(--accent2)); }
-  .section-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--accent); margin-bottom:24px; }
-  .route-inputs { position:relative; }
-  .route-line { position:absolute; left:17px; top:44px; bottom:44px; width:2px; background:linear-gradient(180deg,var(--accent),var(--accent2)); z-index:1; }
-  .input-row { display:flex; align-items:center; gap:16px; padding:6px 0; }
-  .dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; z-index:2; position:relative; }
-  .dot-from { background:var(--accent); box-shadow:0 0 10px rgba(232,255,71,.5); }
-  .dot-to   { background:var(--accent2); box-shadow:0 0 10px rgba(255,107,53,.5); border-radius:2px; }
-  .input-group { flex:1; position:relative; }
-  .input-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
-  input[type="text"], input[type="number"], select {
-    width:100%; background:var(--surface); border:1px solid var(--border); border-radius:2px;
-    color:var(--text); font-family:'DM Sans',sans-serif; font-size:15px; padding:12px 14px;
-    outline:none; transition:border-color .2s,box-shadow .2s; -webkit-appearance:none;
-  }
-  input:focus, select:focus { border-color:var(--accent); box-shadow:0 0 0 2px rgba(232,255,71,.1); }
-  select {
-    cursor:pointer;
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:linear-gradient(rgba(232,255,71,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,255,71,.03) 1px,transparent 1px);
+    background-size:60px 60px;}
+  .container{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:40px 20px 80px;}
+  header{display:flex;align-items:flex-end;gap:16px;margin-bottom:60px;}
+  .logo{font-family:'Bebas Neue',sans-serif;font-size:72px;line-height:1;letter-spacing:2px;}
+  .logo span{color:var(--accent);}
+  .tagline{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:3px;margin-bottom:10px;line-height:1.6;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:2px;padding:36px;margin-bottom:24px;position:relative;}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
+  .section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:24px;}
+  .route-inputs{position:relative;}
+  .route-line{position:absolute;left:17px;top:44px;bottom:44px;width:2px;background:linear-gradient(180deg,var(--accent),var(--accent2));z-index:1;}
+  .input-row{display:flex;align-items:center;gap:16px;padding:6px 0;}
+  .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;z-index:2;position:relative;}
+  .dot-from{background:var(--accent);box-shadow:0 0 10px rgba(232,255,71,.5);}
+  .dot-to{background:var(--accent2);box-shadow:0 0 10px rgba(255,107,53,.5);border-radius:2px;}
+  .input-group{flex:1;position:relative;}
+  .input-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  input[type="text"],input[type="number"],select{
+    width:100%;background:var(--surface);border:1px solid var(--border);border-radius:2px;
+    color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;padding:12px 14px;
+    outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
+  input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(232,255,71,.1);}
+  select{cursor:pointer;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat:no-repeat; background-position:right 14px center; padding-right:36px;
-  }
-  /* Fuel badge */
-  .fuel-badge { display:none; align-items:center; gap:8px; margin-top:10px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px; }
-  .fuel-badge.show { display:flex; }
-  .badge-pill { padding:4px 10px; border-radius:2px; font-size:11px; font-weight:500; letter-spacing:1px; }
-  .pill-ron95  { background:rgba(232,255,71,.15); color:var(--accent);  border:1px solid rgba(232,255,71,.3); }
-  .pill-ron97  { background:rgba(255,107,53,.15); color:var(--accent2); border:1px solid rgba(255,107,53,.3); }
-  .pill-diesel { background:rgba(100,180,255,.15); color:#64b4ff;       border:1px solid rgba(100,180,255,.3); }
-  .fuel-price-note { color:var(--muted); }
+    background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+
+  /* Fuel price bar */
+  .price-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:28px;min-height:28px;}
+  .price-tag{font-family:'DM Mono',monospace;font-size:11px;padding:5px 10px;border-radius:2px;letter-spacing:1px;white-space:nowrap;}
+  .ptag-ron95 {background:rgba(232,255,71,.12);color:var(--accent); border:1px solid rgba(232,255,71,.25);}
+  .ptag-ron97 {background:rgba(255,107,53,.12);color:var(--accent2);border:1px solid rgba(255,107,53,.25);}
+  .ptag-diesel{background:rgba(100,180,255,.12);color:var(--blue);  border:1px solid rgba(100,180,255,.25);}
+  .price-loading{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;animation:blink 1.2s infinite;}
+  @keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+  .price-date{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;width:100%;margin-top:2px;}
+
+  /* Fuel badge on car select */
+  .fuel-badge{display:none;align-items:center;gap:8px;margin-top:10px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;}
+  .fuel-badge.show{display:flex;}
+  .badge-pill{padding:4px 10px;border-radius:2px;font-size:11px;font-weight:500;letter-spacing:1px;}
+  .pill-ron95 {background:rgba(232,255,71,.15);color:var(--accent); border:1px solid rgba(232,255,71,.3);}
+  .pill-ron97 {background:rgba(255,107,53,.15);color:var(--accent2);border:1px solid rgba(255,107,53,.3);}
+  .pill-diesel{background:rgba(100,180,255,.15);color:var(--blue);  border:1px solid rgba(100,180,255,.3);}
+  .fuel-price-note{color:var(--muted);}
+
+  /* RON95 subsidy notice */
+  .subsidy-notice{display:none;margin-top:12px;background:rgba(232,255,71,.05);border:1px solid rgba(232,255,71,.15);border-radius:2px;padding:14px 16px;}
+  .subsidy-notice.show{display:block;}
+  .subsidy-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;}
+  .subsidy-opts{display:flex;gap:10px;flex-wrap:wrap;}
+  .subsidy-btn{background:var(--surface);border:1px solid var(--border);border-radius:2px;color:var(--muted);
+    font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;padding:8px 14px;cursor:pointer;transition:all .2s;}
+  .subsidy-btn:hover{border-color:var(--accent);color:var(--text);}
+  .subsidy-btn.active{border-color:var(--accent);background:rgba(232,255,71,.08);color:var(--accent);}
+
   /* Condition grid */
-  .cond-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-top:8px; }
-  @media(max-width:640px){ .cond-grid{grid-template-columns:repeat(3,1fr);} .logo{font-size:48px;} }
-  @media(max-width:400px){ .cond-grid{grid-template-columns:repeat(2,1fr);} }
-  .cond-btn {
-    background:var(--surface); border:1px solid var(--border); border-radius:2px; color:var(--muted);
-    font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; padding:12px 8px 10px;
-    cursor:pointer; transition:all .2s; display:flex; flex-direction:column; align-items:center;
-    gap:5px; text-align:center; line-height:1.3; width:100%;
-  }
-  .cond-btn:hover { border-color:var(--accent); color:var(--text); }
-  .cond-btn.active { border-color:var(--accent); background:rgba(232,255,71,.08); color:var(--accent); }
-  .cond-emoji { font-size:20px; }
-  .cond-name  { font-weight:600; font-size:11px; }
-  .cond-desc  { font-size:9px; font-family:'DM Mono',monospace; letter-spacing:.5px; color:var(--muted); display:block; }
-  .cond-btn.active .cond-desc { color:rgba(232,255,71,.5); }
-  /* Manual */
-  .manual-wrap { display:none; margin-top:16px; }
+  .cond-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px;}
+  @media(max-width:640px){.cond-grid{grid-template-columns:repeat(3,1fr);}.logo{font-size:48px;}}
+  @media(max-width:400px){.cond-grid{grid-template-columns:repeat(2,1fr);}}
+  .cond-btn{background:var(--surface);border:1px solid var(--border);border-radius:2px;color:var(--muted);
+    font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:12px 8px 10px;
+    cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;
+    gap:5px;text-align:center;line-height:1.3;width:100%;}
+  .cond-btn:hover{border-color:var(--accent);color:var(--text);}
+  .cond-btn.active{border-color:var(--accent);background:rgba(232,255,71,.08);color:var(--accent);}
+  .cond-emoji{font-size:20px;}
+  .cond-name{font-weight:600;font-size:11px;}
+  .cond-desc{font-size:9px;font-family:'DM Mono',monospace;letter-spacing:.5px;color:var(--muted);display:block;}
+  .cond-btn.active .cond-desc{color:rgba(232,255,71,.5);}
+
+  .manual-wrap{display:none;margin-top:16px;}
+
   /* Button */
-  .btn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:16px;
-    background:var(--accent); color:#0a0a0a; border:none; border-radius:2px;
-    font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:3px;
-    cursor:pointer; transition:background .2s,transform .1s; margin-top:32px; }
-  .btn:hover { background:#d4eb30; }
-  .btn:active { transform:scale(.99); }
-  .btn:disabled { opacity:.4; cursor:not-allowed; }
-  .spinner { width:18px; height:18px; border:2px solid #0a0a0a; border-top-color:transparent; border-radius:50%; animation:spin .7s linear infinite; }
-  @keyframes spin { to{transform:rotate(360deg)} }
+  .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;
+    background:var(--accent);color:#0a0a0a;border:none;border-radius:2px;
+    font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;
+    cursor:pointer;transition:background .2s,transform .1s;margin-top:32px;}
+  .btn:hover{background:#d4eb30;}
+  .btn:active{transform:scale(.99);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .spinner{width:18px;height:18px;border:2px solid #0a0a0a;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
   /* Results */
-  .results { display:none; animation:fadeUp .4s ease both; }
-  .results.show { display:block; }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-  .result-hero { background:var(--panel); border:1px solid var(--border); border-radius:2px; padding:36px; margin-bottom:16px; position:relative; overflow:hidden; }
-  .result-hero::after { content:'⛽'; position:absolute; right:30px; top:50%; transform:translateY(-50%); font-size:80px; opacity:.06; pointer-events:none; }
-  .result-value { font-family:'Bebas Neue',sans-serif; font-size:80px; line-height:1; color:var(--accent); letter-spacing:2px; }
-  .result-unit  { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-top:4px; }
-  .route-display { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
-  .route-chip { font-family:'DM Mono',monospace; font-size:12px; padding:6px 12px; border-radius:2px; letter-spacing:1px; }
-  .chip-from  { background:rgba(232,255,71,.1); color:var(--accent); }
-  .chip-arrow { color:var(--muted); font-size:18px; }
-  .chip-to    { background:rgba(255,107,53,.1); color:var(--accent2); }
-  .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
-  @media(max-width:640px){ .stats-grid{grid-template-columns:repeat(2,1fr);} }
-  .stat-box { background:var(--panel); border:1px solid var(--border); border-radius:2px; padding:20px; }
-  .stat-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
-  .stat-value { font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--text); letter-spacing:1px; line-height:1.1; }
-  .stat-sub   { font-size:11px; color:var(--muted); margin-top:2px; }
-  .stat-cost  { border-color:rgba(232,255,71,.25)!important; }
-  .stat-cost .stat-label,.stat-cost .stat-value { color:var(--accent); }
+  .results{display:none;animation:fadeUp .4s ease both;}
+  .results.show{display:block;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .result-hero{background:var(--panel);border:1px solid var(--border);border-radius:2px;padding:36px;margin-bottom:16px;position:relative;overflow:hidden;}
+  .result-hero::after{content:'⛽';position:absolute;right:30px;top:50%;transform:translateY(-50%);font-size:80px;opacity:.06;pointer-events:none;}
+  .result-value{font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:1;color:var(--accent);letter-spacing:2px;}
+  .result-unit{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+  .route-display{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
+  .route-chip{font-family:'DM Mono',monospace;font-size:12px;padding:6px 12px;border-radius:2px;letter-spacing:1px;}
+  .chip-from{background:rgba(232,255,71,.1);color:var(--accent);}
+  .chip-arrow{color:var(--muted);font-size:18px;}
+  .chip-to{background:rgba(255,107,53,.1);color:var(--accent2);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  @media(max-width:640px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+  .stat-box{background:var(--panel);border:1px solid var(--border);border-radius:2px;padding:20px;}
+  .stat-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+  .stat-value{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--text);letter-spacing:1px;line-height:1.1;}
+  .stat-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+  .stat-cost{border-color:rgba(232,255,71,.25)!important;}
+  .stat-cost .stat-label,.stat-cost .stat-value{color:var(--accent);}
+
   /* Error */
-  .error-msg { display:none; background:rgba(255,80,80,.08); border:1px solid rgba(255,80,80,.2); border-radius:2px; padding:14px 18px; color:#ff8080; font-family:'DM Mono',monospace; font-size:12px; letter-spacing:1px; margin-top:16px; }
-  .error-msg.show { display:block; }
+  .error-msg{display:none;background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.2);border-radius:2px;
+    padding:14px 18px;color:#ff8080;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;margin-top:16px;}
+  .error-msg.show{display:block;}
+
   /* Autocomplete */
-  .autocomplete-wrap { position:relative; }
-  .suggestions { position:absolute; top:100%; left:0; right:0; background:#1a1a1a; border:1px solid var(--border); border-top:none; border-radius:0 0 2px 2px; z-index:100; max-height:200px; overflow-y:auto; display:none; }
-  .suggestions.open { display:block; }
-  .suggestion-item { padding:10px 14px; font-size:13px; cursor:pointer; color:var(--text); border-bottom:1px solid var(--border); transition:background .15s; }
-  .suggestion-item:last-child { border-bottom:none; }
-  .suggestion-item:hover { background:rgba(232,255,71,.07); }
-  .disclaimer { font-family:'DM Mono',monospace; font-size:10px; color:#333; text-align:center; margin-top:40px; letter-spacing:1px; line-height:1.8; }
+  .autocomplete-wrap{position:relative;}
+  .suggestions{position:absolute;top:100%;left:0;right:0;background:#1a1a1a;border:1px solid var(--border);
+    border-top:none;border-radius:0 0 2px 2px;z-index:100;max-height:200px;overflow-y:auto;display:none;}
+  .suggestions.open{display:block;}
+  .suggestion-item{padding:10px 14px;font-size:13px;cursor:pointer;color:var(--text);border-bottom:1px solid var(--border);transition:background .15s;}
+  .suggestion-item:last-child{border-bottom:none;}
+  .suggestion-item:hover{background:rgba(232,255,71,.07);}
+
+  /* Footer */
+  footer{font-family:'DM Mono',monospace;font-size:10px;color:#2e2e2e;text-align:center;margin-top:48px;line-height:2;letter-spacing:.5px;}
+  footer a{color:#3a3a3a;text-decoration:none;border-bottom:1px solid #2e2e2e;}
+  footer a:hover{color:var(--muted);}
 </style>
 </head>
 <body>
@@ -120,12 +145,11 @@
 
   <header>
     <div class="logo">Fuel<span>Route</span></div>
-    <div class="tagline">One-way trip<br>fuel consumption estimator</div>
+    <div class="tagline">One-way trip<br>fuel estimator</div>
   </header>
 
   <div class="card">
-    <div class="section-label">// Route</div>
-
+    <div class="section-label" style="margin-top:8px">// Route</div>
     <div class="route-inputs">
       <div class="route-line"></div>
       <div class="input-row">
@@ -176,6 +200,10 @@
           <option value="alphard">Toyota Alphard / Vellfire</option>
           <option value="hiace">Toyota HiAce (Diesel)</option>
         </optgroup>
+        <optgroup label="Mazda">
+          <option value="mazda3">Mazda 3 / CX-3</option>
+          <option value="cx5">Mazda CX-5</option>
+        </optgroup>
         <optgroup label="Mitsubishi / Nissan">
           <option value="triton">Mitsubishi Triton (Diesel)</option>
           <option value="navara">Nissan Navara (Diesel)</option>
@@ -187,10 +215,39 @@
           <option value="custom_diesel">Other — Diesel</option>
         </optgroup>
       </select>
+
       <!-- Fuel type badge -->
       <div class="fuel-badge" id="fuelBadge">
         <span class="badge-pill" id="fuelPill"></span>
         <span class="fuel-price-note" id="fuelNote"></span>
+        <span class="badge-pill" id="fuelPill2" style="display:none"></span>
+        <span class="fuel-price-note" id="fuelNote2" style="display:none"></span>
+      </div>
+
+      <!-- RON95 subsidy question -->
+      <div class="subsidy-notice" id="subsidyNotice">
+        <div class="subsidy-title">Which RON95 price applies to you?</div>
+        <div class="subsidy-opts">
+          <button class="subsidy-btn active" data-sub="general" onclick="pickSubsidy(this)">
+            RM2.60 — General market
+          </button>
+          <button class="subsidy-btn" data-sub="budi95" onclick="pickSubsidy(this)">
+            RM1.99 — BUDI 95 subsidy eligible
+          </button>
+        </div>
+      </div>
+
+      <!-- Diesel region question -->
+      <div class="subsidy-notice" id="dieselRegion" style="border-color:rgba(100,180,255,.2)">
+        <div class="subsidy-title" style="color:var(--blue)">Which region are you in?</div>
+        <div class="subsidy-opts">
+          <button class="subsidy-btn active" data-rgn="peninsular" onclick="pickRegion(this)" style="border-color:rgba(100,180,255,.3)">
+            Peninsular Malaysia
+          </button>
+          <button class="subsidy-btn" data-rgn="eastmsia" onclick="pickRegion(this)">
+            East Malaysia (Sabah / Sarawak / Labuan)
+          </button>
+        </div>
       </div>
     </div>
 
@@ -201,7 +258,7 @@
       <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:6px;letter-spacing:1px;">Check your dashboard trip computer or car manual.</div>
     </div>
 
-    <!-- Driving condition (single merged selector) -->
+    <!-- Driving condition -->
     <div style="display:none;margin-top:24px" id="condWrap">
       <div class="input-label">Driving Condition &amp; Road Type</div>
       <div class="cond-grid">
@@ -219,7 +276,7 @@
         </button>
         <button class="cond-btn" data-c="hilly" onclick="pickCond(this)">
           <span class="cond-emoji">⛰️</span><span class="cond-name">Hilly</span>
-          <span class="cond-desc">Inland, rolling hills, Sabah roads</span>
+          <span class="cond-desc">Inland roads, rolling terrain</span>
         </button>
         <button class="cond-btn" data-c="mountain" onclick="pickCond(this)">
           <span class="cond-emoji">🏔️</span><span class="cond-name">Mountainous</span>
@@ -239,7 +296,7 @@
       <div class="route-display">
         <span class="route-chip chip-from" id="lblFrom">—</span>
         <span class="chip-arrow">→</span>
-        <span class="route-chip chip-to"   id="lblTo">—</span>
+        <span class="route-chip chip-to" id="lblTo">—</span>
       </div>
       <div class="result-value" id="resLitres">—</div>
       <div class="result-unit">Litres estimated</div>
@@ -268,20 +325,47 @@
     </div>
   </div>
 
-  <div class="disclaimer">
-    Route distance via OSRM · Location search via OpenStreetMap (Malaysia only)<br>
-    Fuel prices: RON95 RM2.05 · RON97 RM3.40 · Diesel RM2.15 · Estimates are approximate.
-  </div>
+  <footer>
+    Built by <a href="https://github.com/fzrhrs" target="_blank">@fzrhrs</a>
+    <br>
+    Fuel prices from
+    <a href="https://data.gov.my/data-catalogue/fuelprice" target="_blank">data.gov.my — Price of Petroleum &amp; Diesel</a>
+    · Ministry of Finance, Malaysia · Licensed under
+    <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>
+    <br>
+    Route distances via <a href="https://project-osrm.org" target="_blank">OSRM</a> ·
+    Location search via <a href="https://nominatim.openstreetmap.org" target="_blank">OpenStreetMap Nominatim</a>
+    <br>
+    Fuel estimates are approximate. Actual consumption varies with load, vehicle condition, and driving style.
+  </footer>
 
 </div>
 <script>
-// ── Fuel prices & labels ──────────────────────────────────────────────────
-const PRICE = { ron95:2.05, ron97:3.40, diesel:2.15 };
-const LABEL = { ron95:'RON95', ron97:'RON97', diesel:'Diesel' };
-const PCLS  = { ron95:'pill-ron95', ron97:'pill-ron97', diesel:'pill-diesel' };
+// ── Fuel prices (fetched live from data.gov.my, fallback to last known rates) ──
+let PRICES = { ron95_general:2.60, ron95_budi95:1.99, ron97:3.40, diesel_peninsular:3.35, diesel_eastmsia:2.15 };
 
-// ── Car data: fuel type + consumption per condition ───────────────────────
-// Conditions: 0=city  1=mixed  2=highway  3=hilly  4=mountain
+async function loadFuelPrices() {
+  try {
+    const res  = await fetch('https://api.data.gov.my/data-catalogue?id=fuelprice&sort=-date&filter=series_type@level&limit=1');
+    const data = await res.json();
+    if (!data || !data.length) throw new Error('empty');
+    const r = data[0];
+    if (r.ron95          != null) PRICES.ron95_general    = r.ron95;
+    if (r.ron95_budi95   != null) PRICES.ron95_budi95     = r.ron95_budi95;
+    if (r.ron97          != null) PRICES.ron97             = r.ron97;
+    if (r.diesel         != null) PRICES.diesel_peninsular = r.diesel;
+    if (r.diesel_eastmsia!= null) PRICES.diesel_eastmsia   = r.diesel_eastmsia;
+    // Refresh badge in case car was already selected before prices loaded
+    const v = document.getElementById('carType').value;
+    if (v) updateBadge(v);
+  } catch(e) {
+    // Silently fall back to hardcoded last-known rates — no UI shown
+    console.warn('FuelRoute: could not fetch live prices, using fallback.', e);
+  }
+}
+
+// ── Car data ───────────────────────────────────────────────────────────────
+// Conditions index: 0=city 1=mixed 2=highway 3=hilly 4=mountain
 const CARS = {
   axia:      {f:'ron95',  r:[10.5, 8.5,  7.0, 11.5, 14.0]},
   myvi:      {f:'ron95',  r:[13.0,10.5,  8.5, 13.5, 16.5]},
@@ -298,45 +382,96 @@ const CARS = {
   fortuner_d:{f:'diesel', r:[14.5,12.0, 10.0, 15.5, 19.0]},
   alphard:   {f:'ron95',  r:[18.0,15.5, 13.0, 19.5, 23.0]},
   hiace:     {f:'diesel', r:[14.0,11.5,  9.5, 15.0, 18.5]},
+  mazda3:    {f:'ron97',  r:[14.0,11.5,  9.0, 14.5, 17.5]},
+  cx5:       {f:'ron97',  r:[15.5,13.0, 10.5, 16.0, 19.5]},
   triton:    {f:'diesel', r:[15.0,12.5, 10.5, 16.0, 19.5]},
   navara:    {f:'diesel', r:[14.5,12.0, 10.0, 15.5, 19.0]},
   '4wd_d':   {f:'diesel', r:[20.0,17.0, 14.0, 21.5, 25.5]},
 };
-const CI = {city:0, mixed:1, highway:2, hilly:3, mountain:4};
+const CI = {city:0,mixed:1,highway:2,hilly:3,mountain:4};
+const LABEL = {ron95:'RON95',ron97:'RON97',diesel:'Diesel'};
+const PCLS  = {ron95:'pill-ron95',ron97:'pill-ron97',diesel:'pill-diesel'};
 
-let cond = 'highway';
+let cond      = 'highway';
+let subsidyChoice = 'general';   // for RON95
+let regionChoice  = 'peninsular'; // for diesel
 
 function pickCond(btn) {
   document.querySelectorAll('.cond-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  cond = btn.dataset.c;
+  btn.classList.add('active'); cond = btn.dataset.c;
+}
+
+function pickSubsidy(btn) {
+  document.querySelectorAll('[data-sub]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); subsidyChoice = btn.dataset.sub;
+  updateBadge(document.getElementById('carType').value);
+}
+
+function pickRegion(btn) {
+  document.querySelectorAll('[data-rgn]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); regionChoice = btn.dataset.rgn;
+  updateBadge(document.getElementById('carType').value);
+}
+
+function getPrice(fuelType) {
+  if (fuelType === 'ron95') return subsidyChoice === 'budi95' ? PRICES.ron95_budi95 : PRICES.ron95_general;
+  if (fuelType === 'ron97') return PRICES.ron97;
+  if (fuelType === 'diesel') return regionChoice === 'eastmsia' ? PRICES.diesel_eastmsia : PRICES.diesel_peninsular;
+  return 0;
+}
+
+function updateBadge(val) {
+  const badge = document.getElementById('fuelBadge');
+  const pill  = document.getElementById('fuelPill');
+  const note  = document.getElementById('fuelNote');
+  const pill2 = document.getElementById('fuelPill2');
+  const note2 = document.getElementById('fuelNote2');
+  if (!val) { badge.classList.remove('show'); return; }
+  let ft = val.startsWith('custom_') ? val.replace('custom_','') : CARS[val]?.f;
+  if (!ft) return;
+
+  if (ft === 'ron95') {
+    // Show both general and BUDI95 prices
+    pill.className   = 'badge-pill pill-ron95';
+    pill.textContent = 'RON95 (General)';
+    note.textContent = 'RM' + PRICES.ron95_general.toFixed(2) + ' / litre';
+    pill2.className   = 'badge-pill pill-ron95';
+    pill2.style.display = '';
+    pill2.textContent = 'BUDI95';
+    note2.style.display = '';
+    note2.textContent = 'RM' + PRICES.ron95_budi95.toFixed(2) + ' / litre';
+  } else {
+    // Single price for RON97 and Diesel
+    const price = getPrice(ft);
+    pill.className   = 'badge-pill ' + PCLS[ft];
+    pill.textContent = LABEL[ft];
+    note.textContent = 'RM' + price.toFixed(2) + ' / litre';
+    pill2.style.display = 'none';
+    note2.style.display = 'none';
+  }
+  badge.classList.add('show');
 }
 
 function onCarChange() {
   const val = document.getElementById('carType').value;
-  const condWrap   = document.getElementById('condWrap');
-  const manualWrap = document.getElementById('manualWrap');
-  const badge      = document.getElementById('fuelBadge');
-  const pill       = document.getElementById('fuelPill');
-  const note       = document.getElementById('fuelNote');
+  const condWrap     = document.getElementById('condWrap');
+  const manualWrap   = document.getElementById('manualWrap');
+  const subsidyNotice= document.getElementById('subsidyNotice');
+  const dieselRegion = document.getElementById('dieselRegion');
 
-  if (!val) { condWrap.style.display='none'; manualWrap.style.display='none'; badge.classList.remove('show'); return; }
-
-  condWrap.style.display = 'block';
-
-  let ft;
-  if (val.startsWith('custom_')) {
-    ft = val.replace('custom_','');
-    manualWrap.style.display = 'block';
-  } else {
-    ft = CARS[val].f;
-    manualWrap.style.display = 'none';
+  if (!val) {
+    condWrap.style.display='none'; manualWrap.style.display='none';
+    subsidyNotice.classList.remove('show'); dieselRegion.classList.remove('show');
+    document.getElementById('fuelBadge').classList.remove('show');
+    return;
   }
 
-  pill.className = 'badge-pill ' + PCLS[ft];
-  pill.textContent = LABEL[ft];
-  note.textContent = 'RM' + PRICE[ft].toFixed(2) + ' / litre';
-  badge.classList.add('show');
+  condWrap.style.display = 'block';
+  const ft = val.startsWith('custom_') ? val.replace('custom_','') : CARS[val]?.f;
+  manualWrap.style.display   = val.startsWith('custom_') ? 'block' : 'none';
+  subsidyNotice.classList.toggle('show', ft === 'ron95');
+  dieselRegion.classList.toggle('show',  ft === 'diesel');
+  updateBadge(val);
 }
 
 function getCalcInputs() {
@@ -351,29 +486,27 @@ function getCalcInputs() {
     ft   = CARS[val].f;
     l100 = CARS[val].r[CI[cond]];
   }
-  return {l100, ft};
+  return {l100, ft, price: getPrice(ft)};
 }
 
 // ── Autocomplete ──────────────────────────────────────────────────────────
 let debT;
-function setupAC(inId, suId, latId, lonId) {
-  const inp = document.getElementById(inId);
-  const box = document.getElementById(suId);
-  inp.addEventListener('input', ()=>{
-    clearTimeout(debT);
-    const q = inp.value.trim();
+function setupAC(inId,suId,latId,lonId) {
+  const inp=document.getElementById(inId), box=document.getElementById(suId);
+  inp.addEventListener('input',()=>{
+    clearTimeout(debT); const q=inp.value.trim();
     if(q.length<3){box.classList.remove('open');return;}
-    debT = setTimeout(()=>fetchAC(q,box,inp,latId,lonId), 350);
+    debT=setTimeout(()=>fetchAC(q,box,inp,latId,lonId),350);
   });
-  inp.addEventListener('blur', ()=>setTimeout(()=>box.classList.remove('open'),200));
+  inp.addEventListener('blur',()=>setTimeout(()=>box.classList.remove('open'),200));
 }
-async function fetchAC(q, box, inp, latId, lonId) {
+async function fetchAC(q,box,inp,latId,lonId) {
   try {
-    const d = await (await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&countrycodes=my`,{headers:{'Accept-Language':'en'}})).json();
+    const d=await(await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&countrycodes=my`,{headers:{'Accept-Language':'en'}})).json();
     box.innerHTML='';
     if(!d.length){box.classList.remove('open');return;}
     d.forEach(p=>{
-      const div=document.createElement('div'); div.className='suggestion-item';
+      const div=document.createElement('div');div.className='suggestion-item';
       div.textContent=p.display_name.split(',').slice(0,3).join(', ');
       div.addEventListener('mousedown',()=>{
         inp.value=div.textContent;
@@ -389,53 +522,56 @@ async function fetchAC(q, box, inp, latId, lonId) {
 setupAC('fromInput','fromSugg','fromLat','fromLon');
 setupAC('toInput',  'toSugg',  'toLat',  'toLon');
 
-// ── OSRM routing ──────────────────────────────────────────────────────────
+// ── OSRM ─────────────────────────────────────────────────────────────────
 async function getDist(fLat,fLon,tLat,tLon) {
-  const d = await (await fetch(`https://router.project-osrm.org/route/v1/driving/${fLon},${fLat};${tLon},${tLat}?overview=false`)).json();
+  const d=await(await fetch(`https://router.project-osrm.org/route/v1/driving/${fLon},${fLat};${tLon},${tLat}?overview=false`)).json();
   if(d.code!=='Ok'||!d.routes.length) throw new Error('Could not find a driving route between these locations.');
   return d.routes[0].distance/1000;
 }
 
-async function geocode(inId, latId, lonId) {
+async function geocode(inId,latId,lonId) {
   const lat=document.getElementById(latId).value, lon=document.getElementById(lonId).value;
-  if(lat&&lon) return {lat:+lat,lon:+lon};
+  if(lat&&lon) return{lat:+lat,lon:+lon};
   const q=document.getElementById(inId).value.trim();
   if(!q) throw new Error(`Please enter a ${inId==='fromInput'?'starting point':'destination'}.`);
-  const d=await (await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1&countrycodes=my`,{headers:{'Accept-Language':'en'}})).json();
+  const d=await(await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1&countrycodes=my`,{headers:{'Accept-Language':'en'}})).json();
   if(!d.length) throw new Error(`Could not find: "${q}"`);
-  return {lat:+d[0].lat, lon:+d[0].lon};
+  return{lat:+d[0].lat,lon:+d[0].lon};
 }
 
-// ── Calculate ──────────────────────────────────────────────────────────────
+// ── Calculate ─────────────────────────────────────────────────────────────
 async function calculate() {
-  const btn=document.getElementById('calcBtn'), err=document.getElementById('errMsg'), res=document.getElementById('results');
+  const btn=document.getElementById('calcBtn'),err=document.getElementById('errMsg'),res=document.getElementById('results');
   btn.disabled=true; btn.innerHTML='<div class="spinner"></div> ROUTING…';
   err.classList.remove('show'); res.classList.remove('show');
   try {
-    const {l100,ft} = getCalcInputs();
+    const {l100,ft,price} = getCalcInputs();
     const from = await geocode('fromInput','fromLat','fromLon');
     const to   = await geocode('toInput',  'toLat',  'toLon');
     const km   = await getDist(from.lat,from.lon,to.lat,to.lon);
     const litres = (km * l100) / 100;
-    const cost   = litres * PRICE[ft];
-
-    document.getElementById('resLitres').textContent  = litres.toFixed(2);
-    document.getElementById('resDist').textContent    = km.toFixed(1);
-    document.getElementById('resRate').textContent    = l100.toFixed(1);
-    document.getElementById('resFuelType').textContent= LABEL[ft];
-    document.getElementById('resFuelPrice').textContent='RM'+PRICE[ft].toFixed(2)+' / litre';
-    document.getElementById('resCost').textContent    = 'RM '+cost.toFixed(2);
-    document.getElementById('lblFrom').textContent    = document.getElementById('fromInput').value.split(',')[0];
-    document.getElementById('lblTo').textContent      = document.getElementById('toInput').value.split(',')[0];
+    const cost   = litres * price;
+    document.getElementById('resLitres').textContent   = litres.toFixed(2);
+    document.getElementById('resDist').textContent     = km.toFixed(1);
+    document.getElementById('resRate').textContent     = l100.toFixed(1);
+    document.getElementById('resFuelType').textContent = LABEL[ft];
+    document.getElementById('resFuelPrice').textContent= 'RM'+price.toFixed(2)+' / litre';
+    document.getElementById('resCost').textContent     = 'RM '+cost.toFixed(2);
+    document.getElementById('lblFrom').textContent     = document.getElementById('fromInput').value.split(',')[0];
+    document.getElementById('lblTo').textContent       = document.getElementById('toInput').value.split(',')[0];
     res.classList.add('show');
     res.scrollIntoView({behavior:'smooth',block:'nearest'});
-  } catch(e) {
+  } catch(e){
     err.textContent='⚠ '+e.message; err.classList.add('show');
   } finally {
     btn.disabled=false; btn.innerHTML='⛽ CALCULATE FUEL';
   }
 }
+
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElementById('calcBtn').disabled)calculate();});
+
+loadFuelPrices();
+
 </script>
 </body>
 </html>
