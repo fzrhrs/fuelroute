@@ -361,9 +361,19 @@ function calcMonthly() {
   const BUDI_PRICE     = PRICES.ron95_budi95   || 1.99;
   const GENERAL_PRICE  = PRICES.ron95_general  || 2.60;
 
-  // Use cost per trip to avoid rounding discrepancies
-  const totalCost = totalTrips * costPerTrip;
-  const pricePerLitre = totalLitres > 0 ? (totalCost / totalLitres) : actualPrice;
+  // Calculate total cost - BUDI95 needs special handling for quota
+  let totalCost, pricePerLitre;
+  if (isBudi95) {
+    // Recalculate for BUDI95 to account for 200L quota limit
+    const budiLitres    = Math.min(totalLitres, BUDI_LIMIT);
+    const generalLitres = Math.max(0, totalLitres - BUDI_LIMIT);
+    totalCost = (budiLitres * BUDI_PRICE) + (generalLitres * GENERAL_PRICE);
+    pricePerLitre = totalCost / totalLitres;
+  } else {
+    // For non-BUDI95, use cost per trip to maintain accuracy
+    totalCost = totalTrips * costPerTrip;
+    pricePerLitre = totalLitres > 0 ? (totalCost / totalLitres) : actualPrice;
+  }
 
   const weeklyCost = (totalCost / weeks);
   const perTrip    = totalLitres > 0 ? (totalCost / totalTrips) : 0;
