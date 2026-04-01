@@ -18,6 +18,40 @@ function refreshDieselLabels() {
   });
 }
 
+
+function renderTicker(dateStr) {
+  const items = [
+    { label: 'RON95 General', price: PRICES.ron95_general, cls: 't-ron95',  dot: 'dot-ron95'  },
+    { label: 'RON95 BUDI95',  price: PRICES.ron95_budi95,  cls: 't-ron95',  dot: 'dot-ron95'  },
+    { label: 'RON97',         price: PRICES.ron97,          cls: 't-ron97',  dot: 'dot-ron97'  },
+    { label: 'Diesel (Pen)',  price: PRICES.diesel_peninsular, cls: 't-diesel', dot: 'dot-diesel' },
+    { label: 'Diesel (EM)',   price: PRICES.diesel_eastmsia,   cls: 't-diesel', dot: 'dot-diesel' },
+  ];
+
+  // Build one set of items, then duplicate for seamless loop
+  const buildItems = () => items.map((item, i) => `
+    <span class="ticker-item">
+      <span class="ticker-dot ${item.dot}"></span>
+      <span class="ticker-label">${item.label}</span>
+      <span class="ticker-price ${item.cls}">RM${item.price.toFixed(2)}</span>
+    </span>
+    ${i < items.length - 1 ? '<span class="ticker-divider"></span>' : ''}
+  `).join('');
+
+  const d = new Date(dateStr);
+  const formatted = d.toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' });
+
+  document.getElementById('tickerInner').innerHTML = `
+    <div class="ticker-date">Fuel prices as of <strong>${formatted}</strong></div>
+    <div class="ticker-scroll-wrap">
+      <div class="ticker-scroll">
+        ${buildItems()}
+        ${buildItems()}
+      </div>
+    </div>
+  `;
+}
+
 async function loadFuelPrices() {
   try {
     // Correct endpoint: returns a plain JSON array, sorted latest first, filtered to level rows only
@@ -35,8 +69,10 @@ async function loadFuelPrices() {
     if (r.diesel_eastmsia!= null) PRICES.diesel_eastmsia   = r.diesel_eastmsia;
 
     console.log('FuelRoute: live prices loaded for', r.date, PRICES);
+    renderTicker(r.date);
   } catch(e) {
     console.warn('FuelRoute: could not fetch live prices, using fallback rates.', e);
+    renderTicker('2026-03-26'); // fallback date
   }
   // Always refresh labels after attempt (uses fallback if fetch failed)
   refreshSubsidyLabels();
