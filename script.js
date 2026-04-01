@@ -593,10 +593,60 @@ function copyShareText() {
   });
 }
 
-function downloadCard() {
-  // For now, we'll use html2canvas library to convert the card to image
-  // This is a placeholder - you'll need to include html2canvas library
-  alert('Download feature coming soon! For now, you can take a screenshot of the summary card or use WhatsApp/Copy options.');
+async function downloadCard() {
+  const btn = event.target;
+  const originalText = btn.innerHTML;
+  
+  try {
+    // Show loading state
+    btn.innerHTML = '⏳ Generating...';
+    btn.disabled = true;
+    
+    // Get the summary card element
+    const card = document.getElementById('summaryCard');
+    
+    // Use html2canvas to convert the card to canvas
+    const canvas = await html2canvas(card, {
+      backgroundColor: null,
+      scale: 2, // Higher quality
+      logging: false,
+      useCORS: true,
+      allowTaint: true
+    });
+    
+    // Convert canvas to blob
+    canvas.toBlob((blob) => {
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const from = document.getElementById('fromInput').value.split(',')[0];
+      const to = document.getElementById('toInput').value.split(',')[0];
+      const date = new Date().toISOString().split('T')[0];
+      
+      link.download = `FuelRoute_${from}_to_${to}_${date}.png`;
+      link.href = url;
+      link.click();
+      
+      // Cleanup
+      URL.revokeObjectURL(url);
+      
+      // Show success
+      btn.innerHTML = '✓ Downloaded!';
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }, 2000);
+    }, 'image/png');
+    
+  } catch (err) {
+    console.error('Download failed:', err);
+    btn.innerHTML = '✗ Failed';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }, 2000);
+    alert('Failed to generate image. Please try taking a screenshot instead.');
+  }
 }
 
 // Close modal on escape key
