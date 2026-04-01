@@ -399,8 +399,37 @@
                 <span id="shareFuelType">—</span>
               </div>
             </div>
+            
+            <!-- Monthly Summary (if available) -->
+            <div class="summary-monthly" id="shareMonthly" style="display:none;">
+              <div class="summary-monthly-header">Monthly Commute</div>
+              <div class="summary-monthly-grid">
+                <div class="summary-monthly-item">
+                  <div class="summary-monthly-label">Total Trips</div>
+                  <div class="summary-monthly-value" id="shareMonthlyTrips">—</div>
+                </div>
+                <div class="summary-monthly-item">
+                  <div class="summary-monthly-label">Total Fuel</div>
+                  <div class="summary-monthly-value" id="shareMonthlyLitres">—</div>
+                </div>
+              </div>
+              <div class="summary-monthly-cost">
+                <div class="summary-monthly-cost-row">
+                  <span class="summary-monthly-label">Monthly Cost:</span>
+                  <span class="summary-monthly-value" id="shareMonthlyCost">—</span>
+                </div>
+                <div class="summary-monthly-cost-row" id="shareMonthlyComparison" style="display:none;">
+                  <span class="summary-monthly-label">Without BUDI95:</span>
+                  <span class="summary-monthly-value" id="shareMonthlyWithout">—</span>
+                </div>
+                <div class="summary-monthly-savings" id="shareMonthlySavings" style="display:none;">
+                  💚 Save <strong id="shareSavingsAmount">—</strong>
+                </div>
+              </div>
+            </div>
+            
             <div class="summary-footer">
-              Calculated on <span id="shareDate">—</span>
+              Calculated on <span id="shareDate">—</span> · fzrhrs.github.io/fuelroute
             </div>
           </div>
 

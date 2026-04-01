@@ -614,12 +614,99 @@ footer a:hover{color:var(--accent);}
   color: rgba(255,255,255,.6);
 }
 
+.summary-monthly {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,.2);
+}
+
+.summary-monthly-header {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.6);
+  margin-bottom: 12px;
+}
+
+.summary-monthly-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.summary-monthly-item {
+  background: rgba(255,255,255,.1);
+  border-radius: 2px;
+  padding: 10px;
+  text-align: center;
+}
+
+.summary-monthly-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.6);
+  margin-bottom: 4px;
+}
+
+.summary-monthly-value {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.summary-monthly-cost {
+  background: rgba(255,255,255,.1);
+  border-radius: 2px;
+  padding: 12px;
+}
+
+.summary-monthly-cost-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+}
+
+.summary-monthly-cost-row .summary-monthly-label {
+  font-size: 11px;
+  text-transform: none;
+  margin: 0;
+}
+
+.summary-monthly-cost-row .summary-monthly-value {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.summary-monthly-savings {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,.2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: rgba(255,255,255,.8);
+  text-align: center;
+}
+
+.summary-monthly-savings strong {
+  color: #fff;
+  font-weight: 600;
+}
+
 .summary-footer {
   font-family: 'DM Mono', monospace;
   font-size: 9px;
   text-align: center;
   color: rgba(255,255,255,.5);
   letter-spacing: 1px;
+  margin-top: 16px;
 }
 
 /* Share Actions */

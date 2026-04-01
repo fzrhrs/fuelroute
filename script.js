@@ -464,6 +464,40 @@ function shareResult() {
   document.getElementById('shareFuelType').textContent = fuelType;
   document.getElementById('shareUnit').textContent = isReturn ? 'litres (return)' : 'litres (one way)';
   
+  // Populate monthly summary if visible
+  const monthlyResult = document.getElementById('monthlyResult');
+  const shareMonthly = document.getElementById('shareMonthly');
+  if (monthlyResult && monthlyResult.style.display !== 'none') {
+    const mTotalTrips = document.getElementById('mTotalTrips').textContent;
+    const mTotalLitres = document.getElementById('mTotalLitres').textContent;
+    const mTotalCost = document.getElementById('mTotalCost').textContent;
+    const mFuelType = document.getElementById('mFuelTypeNote').textContent;
+    
+    document.getElementById('shareMonthlyTrips').textContent = mTotalTrips;
+    document.getElementById('shareMonthlyLitres').textContent = mTotalLitres + 'L';
+    document.getElementById('shareMonthlyCost').textContent = mTotalCost;
+    
+    // Show BUDI95 comparison if applicable
+    if (mFuelType.includes('BUDI95')) {
+      const litresVal = parseFloat(mTotalLitres);
+      const ron95Price = PRICES.ron95_general;
+      const withoutSubsidy = litresVal * ron95Price;
+      const savings = withoutSubsidy - parseFloat(mTotalCost.replace('RM ', ''));
+      
+      document.getElementById('shareMonthlyWithout').textContent = 'RM ' + withoutSubsidy.toFixed(2);
+      document.getElementById('shareSavingsAmount').textContent = 'RM ' + savings.toFixed(2);
+      document.getElementById('shareMonthlyComparison').style.display = 'flex';
+      document.getElementById('shareMonthlySavings').style.display = 'block';
+    } else {
+      document.getElementById('shareMonthlyComparison').style.display = 'none';
+      document.getElementById('shareMonthlySavings').style.display = 'none';
+    }
+    
+    shareMonthly.style.display = 'block';
+  } else {
+    shareMonthly.style.display = 'none';
+  }
+  
   const today = new Date().toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' });
   document.getElementById('shareDate').textContent = today;
   
@@ -501,8 +535,21 @@ function shareWhatsApp() {
     message += `\n📅 *Monthly Commute Summary*\n` +
       `🔄 *Total Trips:* ${mTotalTrips}\n` +
       `⛽ *Total Fuel:* ${mTotalLitres}L\n` +
-      `💰 *Monthly Cost:* ${mTotalCost}\n` +
-      `🚙 *Fuel Type:* ${mFuelType}\n`;
+      `� *Fuel Type:* ${mFuelType}\n`;
+    
+    // For BUDI95, show comparison with without-subsidy cost
+    if (mFuelType.includes('BUDI95')) {
+      const litres = parseFloat(mTotalLitres);
+      const ron95Price = PRICES.ron95_general;
+      const withoutSubsidy = litres * ron95Price;
+      const savings = withoutSubsidy - parseFloat(mTotalCost.replace('RM ', ''));
+      
+      message += `�� *Monthly Cost (BUDI95):* ${mTotalCost}\n` +
+        `� *Without BUDI95:* RM ${withoutSubsidy.toFixed(2)} (@ RM${ron95Price.toFixed(2)}/L)\n` +
+        `💚 *You Save:* RM ${savings.toFixed(2)}\n`;
+    } else {
+      message += `💰 *Monthly Cost:* ${mTotalCost}\n`;
+    }
   }
   
   message += `\nCalculated via FuelRoute — Fuel cost calculator for Malaysia\n` +
