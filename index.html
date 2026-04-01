@@ -12,7 +12,7 @@
 
       <header>
         <div class="logo">Fuel<span>Route</span></div>
-        <div class="tagline">One-way trip<br>fuel estimator</div>
+        <div class="tagline">Fuel cost calculator<br>for Malaysia</div>
       </header>
 
       <!-- Fuel price ticker -->
@@ -211,107 +211,131 @@
         </div>
       </div>
 
-      <!-- BUDI95 Monthly Planner -->
-      <div id="budiPlanner" style="display:none">
+      <!-- Monthly Commute Summary -->
+      <div id="monthlyPlanner" style="display:none">
         <div class="card">
-          <div class="section-label">// BUDI95 Monthly Planner</div>
-          <p class="budi-description" style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">
-            Starting 1 April 2026, eligible BUDI95 users get a maximum of <strong style="color:var(--accent)">200 litres/month</strong> at RM1.99/L. Any usage beyond that is charged at the general market price of RM2.60/L. Enter your commute pattern below to see your monthly fuel cost.
+          <div class="section-label">// Monthly Commute Summary</div>
+          <p style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">
+            Estimate how much fuel and money you spend commuting every month, based on your route above.
           </p>
 
           <div class="budi-form-grid">
             <div>
               <div class="input-label">Trips per week</div>
-              <select id="tripType" onchange="calcBudi()">
-                <option value="12">Mon-Sat return trips (12 trips/week)</option>
-                <option value="10" selected>Mon-Fri return trips (10 trips/week)</option>
-                <option value="6">3 times a week return trips</option>
-                <option value="4">2 times a week return trips</option>
-                <option value="2">Once a week return trip</option>
+              <select id="tripType" onchange="calcMonthly()">
+                <option value="12">Mon–Sat, return (12 trips/week)</option>
+                <option value="10" selected>Mon–Fri, return (10 trips/week)</option>
+                <option value="6">3× a week, return (6 trips/week)</option>
+                <option value="4">2× a week, return (4 trips/week)</option>
+                <option value="2">Once a week, return (2 trips/week)</option>
               </select>
             </div>
             <div>
               <div class="input-label">Weeks in this month</div>
-              <select id="weeksInMonth" onchange="calcBudi()">
-                <option value="1">1 week (once a month)</option>
-                <option value="2">2 weeks (twice a month)</option>
-                <option value="4" selected>4 weeks (weekly)</option>
+              <select id="weeksInMonth" onchange="calcMonthly()">
+                <option value="1">1 week</option>
+                <option value="2">2 weeks</option>
+                <option value="3">3 weeks</option>
+                <option value="4" selected>4 weeks</option>
                 <option value="5">5 weeks (longer month)</option>
               </select>
             </div>
           </div>
 
-          <div class="budi-form-grid">
-            <div>
-              <div class="input-label">Extra trips this month</div>
-              <input type="number" id="extraTrips" value="0" min="0" max="60" onchange="calcBudi()" oninput="calcBudi()">
-              <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:5px;letter-spacing:1px;">Additional trips (weekend outings, etc.)</div>
-            </div>
+          <div style="margin-top:12px">
+            <div class="input-label">Extra one-way trips this month</div>
+            <input type="number" id="extraTrips" value="0" min="0" max="200" onchange="calcMonthly()" oninput="calcMonthly()" style="width:100%">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:5px;letter-spacing:1px;">Weekend outings, errands, etc.</div>
           </div>
 
-          <!-- BUDI result -->
-          <div id="budiResult" style="display:none">
-            <div style="background:var(--subtle);border:1px solid var(--border);border-radius:2px;padding:24px;margin-bottom:16px">
-              <div class="budi-stats-grid">
-                <div>
-                  <div class="input-label">Total trips</div>
-                  <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--text)" id="bTotalTrips">—</div>
-                  <div style="font-size:11px;color:var(--muted)">one-way trips</div>
-                </div>
-                <div>
-                  <div class="input-label">Total litres needed</div>
-                  <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--text)" id="bTotalLitres">—</div>
-                  <div style="font-size:11px;color:var(--muted)">litres this month</div>
-                </div>
-                <div>
-                  <div class="input-label">BUDI95 quota used</div>
-                  <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;" id="bQuotaUsed">—</div>
-                  <div style="font-size:11px;color:var(--muted)">of 200L quota</div>
-                </div>
-              </div>
+          <!-- Results -->
+          <div id="monthlyResult" style="display:none">
 
-              <!-- Progress bar -->
-              <div style="margin-bottom:16px">
-                <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">
-                  <span>BUDI95 Quota Usage</span>
-                  <span id="bQuotaPct">—</span>
-                </div>
-                <div style="background:var(--border);border-radius:2px;height:10px;overflow:hidden">
-                  <div id="bProgressBar" style="height:100%;width:0%;background:var(--accent);border-radius:2px;transition:width .5s ease"></div>
-                </div>
-                <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:4px">
-                  <span>0L</span><span>200L limit</span>
-                </div>
+            <!-- Main summary boxes -->
+            <div class="budi-stats-grid" style="margin-top:8px">
+              <div style="background:var(--subtle);border:1px solid var(--border);border-radius:2px;padding:20px">
+                <div class="stat-label">Total Trips</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--text)" id="mTotalTrips">—</div>
+                <div style="font-size:11px;color:var(--muted)">one-way trips</div>
               </div>
-
-              <!-- Cost breakdown -->
-              <div class="budi-stats-grid">
-                <div style="background:var(--panel);border:1px solid var(--border);border-radius:2px;padding:16px">
-                  <div class="input-label">At BUDI95 (RM1.99)</div>
-                  <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent)" id="bCostBudi">—</div>
-                  <div style="font-size:11px;color:var(--muted)" id="bLitresBudi">— litres</div>
-                </div>
-                <div style="background:var(--panel);border:1px solid var(--border);border-radius:2px;padding:16px">
-                  <div class="input-label">At General (RM2.60)</div>
-                  <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent2)" id="bCostGeneral">—</div>
-                  <div style="font-size:11px;color:var(--muted)" id="bLitresGeneral">— litres</div>
-                </div>
-                <div style="background:var(--panel);border:1px solid rgba(26,107,60,.3);border-radius:2px;padding:16px">
-                  <div class="input-label" style="color:var(--accent)">Total Monthly Cost</div>
-                  <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent)" id="bTotalCost">—</div>
-                  <div style="font-size:11px;color:var(--muted)">Malaysian Ringgit</div>
-                </div>
+              <div style="background:var(--subtle);border:1px solid var(--border);border-radius:2px;padding:20px">
+                <div class="stat-label">Total Litres</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--text)" id="mTotalLitres">—</div>
+                <div style="font-size:11px;color:var(--muted)">litres this month</div>
+              </div>
+              <div style="background:var(--subtle);border:1px solid var(--border);border-radius:2px;padding:20px">
+                <div class="stat-label">Monthly Fuel Cost</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--accent)" id="mTotalCost">—</div>
+                <div style="font-size:11px;color:var(--muted)" id="mFuelTypeNote">—</div>
               </div>
             </div>
 
-            <!-- Savings vs general -->
-            <div id="bSavingsBox" style="background:rgba(26,107,60,.06);border:1px solid rgba(26,107,60,.2);border-radius:2px;padding:16px;font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:1px;display:none">
+            <!-- Weekly & daily breakdown -->
+            <div class="budi-stats-grid">
+              <div style="background:var(--subtle);border:1px solid var(--border);border-radius:2px;padding:20px">
+                <div class="stat-label">Per Week</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--text)" id="mWeeklyCost">—</div>
+                <div style="font-size:11px;color:var(--muted)">RM / week</div>
+              </div>
+              <div style="background:var(--subtle);border:1px solid var(--border);border-radius:2px;padding:20px">
+                <div class="stat-label">Per Trip (one way)</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--text)" id="mPerTrip">—</div>
+                <div style="font-size:11px;color:var(--muted)">RM / trip</div>
+              </div>
+              <div style="background:var(--subtle);border:1px solid var(--border);border-radius:2px;padding:20px">
+                <div class="stat-label">Per Year (est.)</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--accent)" id="mYearlyCost">—</div>
+                <div style="font-size:11px;color:var(--muted)">RM / year</div>
+              </div>
             </div>
+
+            <!-- BUDI95 quota section — only shown for BUDI95 users -->
+            <div id="budiQuotaSection" style="display:none">
+              <div style="background:rgba(26,107,60,.04);border:1px solid rgba(26,107,60,.15);border-radius:2px;padding:20px;margin-bottom:12px">
+                <div class="stat-label" style="color:var(--accent);margin-bottom:12px">BUDI95 Quota Tracker</div>
+
+                <div class="budi-stats-grid">
+                  <div>
+                    <div class="stat-label">BUDI95 Litres Used</div>
+                    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;" id="bQuotaUsed">—</div>
+                    <div style="font-size:11px;color:var(--muted)">of 200L quota</div>
+                  </div>
+                  <div>
+                    <div class="stat-label">At BUDI95 (RM1.99)</div>
+                    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent)" id="bCostBudi">—</div>
+                    <div style="font-size:11px;color:var(--muted)" id="bLitresBudi">—</div>
+                  </div>
+                  <div>
+                    <div class="stat-label">Over Quota (General)</div>
+                    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent2)" id="bCostGeneral">—</div>
+                    <div style="font-size:11px;color:var(--muted)" id="bLitresGeneral">—</div>
+                  </div>
+                </div>
+
+                <!-- Progress bar -->
+                <div style="margin-top:16px">
+                  <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">
+                    <span>BUDI95 Quota Usage</span><span id="bQuotaPct">—</span>
+                  </div>
+                  <div style="background:var(--border);border-radius:2px;height:10px;overflow:hidden">
+                    <div id="bProgressBar" style="height:100%;width:0%;background:var(--accent);border-radius:2px;transition:width .5s ease"></div>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:4px">
+                    <span>0L</span><span>200L limit</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Savings box -->
+              <div id="bSavingsBox" style="display:none;background:rgba(100,180,255,.06);border:1px solid rgba(100,180,255,.2);border-radius:2px;padding:16px;font-family:'DM Mono',monospace;font-size:12px;color:var(--blue);letter-spacing:1px;line-height:1.8;text-align:justify">
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
 
-      <footer>
+            <footer>
         Built by <a href="https://github.com/fzrhrs" target="_blank">@fzrhrs</a>
         <br>
         Fuel prices from

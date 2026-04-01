@@ -306,9 +306,9 @@ async function calculate() {
     res.classList.add('show');
     res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-    // Show BUDI planner only when user selected BUDI95
-    if (typeof showBudiPlanner === 'function') {
-      showBudiPlanner(subsidyChoice === 'budi95');
+    // Show monthly planner for all users once result is available
+    if (typeof showMonthlyPlanner === 'function') {
+      showMonthlyPlanner(true);
     }
   } catch(e) {
     err.textContent = '⚠ ' + e.message;
@@ -319,68 +319,98 @@ async function calculate() {
   }
 }
 
-// ── BUDI95 Monthly Planner ────────────────────────────────────────────────
-function showBudiPlanner(show) {
-  const planner = document.getElementById('budiPlanner');
+// ── Monthly Commute Summary ──────────────────────────────────────────────
+function showMonthlyPlanner(show) {
+  const planner = document.getElementById('monthlyPlanner');
   if (!planner) return;
   planner.style.display = show ? 'block' : 'none';
-  if (show) calcBudi();
+  if (show) calcMonthly();
 }
 
-function calcBudi() {
+function calcMonthly() {
   const litresPerTrip = parseFloat(document.getElementById('resLitres').textContent);
   if (!litresPerTrip || isNaN(litresPerTrip)) return;
 
-  const tripsPerWeek = parseInt(document.getElementById('tripType').value);
-  const weeks        = parseInt(document.getElementById('weeksInMonth').value);
-  const extraTrips   = parseInt(document.getElementById('extraTrips').value) || 0;
+  const tripSel    = document.getElementById('tripType').value;
+  const weeks      = parseInt(document.getElementById('weeksInMonth').value);
+  const extraTrips = parseInt(document.getElementById('extraTrips').value) || 0;
+  const tripsPerWeek = parseInt(tripSel);
 
-  const totalTrips  = (tripsPerWeek * weeks) + extraTrips;
-  const totalLitres = totalTrips * litresPerTrip;
+  const commuteTrips = tripsPerWeek * weeks;
+  const totalTrips   = commuteTrips + extraTrips;
+  const totalLitres  = totalTrips * litresPerTrip;
 
-  const BUDI_LIMIT    = 200;
-  const BUDI_PRICE    = PRICES.ron95_budi95;
-  const GENERAL_PRICE = PRICES.ron95_general;
+  // Cost based on current fuel type
+  const isBudi95       = subsidyChoice === 'budi95';
+  const BUDI_LIMIT     = 200;
+  const BUDI_PRICE     = PRICES.ron95_budi95   || 1.99;
+  const GENERAL_PRICE  = PRICES.ron95_general  || 2.60;
 
-  const budiLitres    = Math.min(totalLitres, BUDI_LIMIT);
-  const generalLitres = Math.max(0, totalLitres - BUDI_LIMIT);
-  const budiCost      = budiLitres * BUDI_PRICE;
-  const generalCost   = generalLitres * GENERAL_PRICE;
-  const totalCost     = budiCost + generalCost;
-
-  const pct        = Math.min(100, (totalLitres / BUDI_LIMIT) * 100);
-  const quotaColor = pct >= 100 ? 'var(--accent2)' : pct >= 80 ? '#e6a817' : 'var(--accent)';
-
-  document.getElementById('bTotalTrips').textContent     = totalTrips;
-  document.getElementById('bTotalLitres').textContent    = totalLitres.toFixed(1);
-  document.getElementById('bQuotaUsed').textContent      = budiLitres.toFixed(1) + 'L';
-  document.getElementById('bQuotaUsed').style.color      = quotaColor;
-  document.getElementById('bQuotaPct').textContent       = pct.toFixed(0) + '%';
-  document.getElementById('bProgressBar').style.width    = pct + '%';
-  document.getElementById('bProgressBar').style.background = quotaColor;
-  document.getElementById('bCostBudi').textContent       = 'RM ' + budiCost.toFixed(2);
-  document.getElementById('bLitresBudi').textContent     = budiLitres.toFixed(1) + ' litres';
-  document.getElementById('bCostGeneral').textContent    = generalLitres > 0 ? 'RM ' + generalCost.toFixed(2) : 'RM 0.00';
-  document.getElementById('bLitresGeneral').textContent  = generalLitres > 0 ? generalLitres.toFixed(1) + ' litres (over quota)' : 'Within quota';
-  document.getElementById('bTotalCost').textContent      = 'RM ' + totalCost.toFixed(2);
-
-  const savingsBox  = document.getElementById('bSavingsBox');
-  const fullGeneral = totalLitres * GENERAL_PRICE;
-  const savings     = fullGeneral - totalCost;
-  if (savings > 0) {
-    savingsBox.style.display = 'block';
-    savingsBox.innerHTML =
-      `💚 You save <strong>RM${savings.toFixed(2)}</strong> this month with BUDI95. ` +
-      `Without the subsidy, you would have paid <strong>RM${fullGeneral.toFixed(2)}</strong> ` +
-      `for all ${totalLitres.toFixed(1)}L at the full general price of RM${GENERAL_PRICE.toFixed(2)}/L.`;
+  let totalCost, pricePerLitre;
+  if (isBudi95) {
+    const budiLitres    = Math.min(totalLitres, BUDI_LIMIT);
+    const generalLitres = Math.max(0, totalLitres - BUDI_LIMIT);
+    totalCost    = (budiLitres * BUDI_PRICE) + (generalLitres * GENERAL_PRICE);
+    pricePerLitre = totalCost / totalLitres; // effective rate
   } else {
-    savingsBox.style.display = 'none';
+    pricePerLitre = getPrice(CARS[document.getElementById('carType').value]?.f || 'petrol');
+    totalCost     = totalLitres * pricePerLitre;
   }
 
-  document.getElementById('budiResult').style.display = 'block';
+  const weeklyCost = (totalCost / weeks);
+  const perTrip    = totalLitres > 0 ? (totalCost / totalTrips) : 0;
+  const yearlyCost = totalCost * 12;
+
+  // Main boxes
+  document.getElementById('mTotalTrips').textContent  = totalTrips;
+  document.getElementById('mTotalLitres').textContent = totalLitres.toFixed(1);
+  document.getElementById('mTotalCost').textContent   = 'RM ' + totalCost.toFixed(2);
+  document.getElementById('mFuelTypeNote').textContent= LABEL[subsidyChoice === 'ron97' ? 'ron97' : subsidyChoice === 'budi95' ? 'ron95_budi95' : 'ron95_general'] || 'petrol';
+  document.getElementById('mWeeklyCost').textContent  = 'RM ' + weeklyCost.toFixed(2);
+  document.getElementById('mPerTrip').textContent     = 'RM ' + perTrip.toFixed(2);
+  document.getElementById('mYearlyCost').textContent  = 'RM ' + yearlyCost.toFixed(0);
+
+  // BUDI95 quota section
+  const budiSection = document.getElementById('budiQuotaSection');
+  if (isBudi95) {
+    budiSection.style.display = 'block';
+    const budiLitres    = Math.min(totalLitres, BUDI_LIMIT);
+    const generalLitres = Math.max(0, totalLitres - BUDI_LIMIT);
+    const budiCost      = budiLitres * BUDI_PRICE;
+    const generalCost   = generalLitres * GENERAL_PRICE;
+    const pct           = Math.min(100, (totalLitres / BUDI_LIMIT) * 100);
+    const quotaColor    = pct >= 100 ? 'var(--accent2)' : pct >= 80 ? '#e6a817' : 'var(--accent)';
+
+    document.getElementById('bQuotaUsed').textContent      = budiLitres.toFixed(1) + 'L';
+    document.getElementById('bQuotaUsed').style.color      = quotaColor;
+    document.getElementById('bCostBudi').textContent       = 'RM ' + budiCost.toFixed(2);
+    document.getElementById('bLitresBudi').textContent     = budiLitres.toFixed(1) + ' litres';
+    document.getElementById('bCostGeneral').textContent    = generalLitres > 0 ? 'RM ' + generalCost.toFixed(2) : 'RM 0.00';
+    document.getElementById('bLitresGeneral').textContent  = generalLitres > 0 ? generalLitres.toFixed(1) + 'L over quota' : 'Within quota ✓';
+    document.getElementById('bQuotaPct').textContent       = pct.toFixed(0) + '%';
+    document.getElementById('bProgressBar').style.width    = pct + '%';
+    document.getElementById('bProgressBar').style.background = quotaColor;
+
+    const savingsBox  = document.getElementById('bSavingsBox');
+    const fullGeneral = totalLitres * GENERAL_PRICE;
+    const savings     = fullGeneral - totalCost;
+    if (savings > 0) {
+      savingsBox.style.display = 'block';
+      savingsBox.innerHTML =
+        `💚 You save <strong>RM${savings.toFixed(2)}</strong> this month with BUDI95. ` +
+        `Without the subsidy, you would have paid <strong>RM${fullGeneral.toFixed(2)}</strong> ` +
+        `for all ${totalLitres.toFixed(1)}L at RM${GENERAL_PRICE.toFixed(2)}/L.`;
+    } else {
+      savingsBox.style.display = 'none';
+    }
+  } else {
+    budiSection.style.display = 'none';
+  }
+
+  document.getElementById('monthlyResult').style.display = 'block';
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────
+
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && !document.getElementById('calcBtn').disabled) calculate();
 });
