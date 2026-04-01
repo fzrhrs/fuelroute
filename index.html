@@ -209,6 +209,11 @@
             <div class="stat-sub">both ways</div>
           </div>
         </div>
+        
+        <!-- Share button -->
+        <button class="btn btn-share" id="shareBtn" onclick="shareResult()" style="margin-top:16px">
+          📤 SHARE RESULT
+        </button>
       </div>
 
       <!-- Monthly Commute Summary -->
@@ -348,6 +353,71 @@
         <br>
         Fuel estimates are approximate. Actual consumption varies with load, vehicle condition, and driving style.
       </footer>
+
+      <!-- Share Modal -->
+      <div class="share-modal" id="shareModal">
+        <div class="share-overlay" onclick="closeShareModal()"></div>
+        <div class="share-content">
+          <div class="share-header">
+            <h3>Share Your Trip</h3>
+            <button class="share-close" onclick="closeShareModal()">✕</button>
+          </div>
+          
+          <!-- Summary Card Preview -->
+          <div class="summary-card" id="summaryCard">
+            <div class="summary-header">
+              <div class="summary-logo">Fuel<span>Route</span></div>
+              <div class="summary-tagline">Fuel cost calculator for Malaysia</div>
+            </div>
+            <div class="summary-route">
+              <div class="summary-location" id="shareFrom">—</div>
+              <div class="summary-arrow">→</div>
+              <div class="summary-location" id="shareTo">—</div>
+            </div>
+            <div class="summary-main">
+              <div class="summary-fuel">
+                <div class="summary-label">Fuel Required</div>
+                <div class="summary-value" id="shareLitres">—</div>
+                <div class="summary-unit" id="shareUnit">litres</div>
+              </div>
+              <div class="summary-cost">
+                <div class="summary-label">Est. Cost</div>
+                <div class="summary-value" id="shareCost">—</div>
+              </div>
+            </div>
+            <div class="summary-details">
+              <div class="summary-detail">
+                <span class="summary-detail-label">Distance:</span>
+                <span id="shareDist">—</span>
+              </div>
+              <div class="summary-detail">
+                <span class="summary-detail-label">Vehicle:</span>
+                <span id="shareVehicle">—</span>
+              </div>
+              <div class="summary-detail">
+                <span class="summary-detail-label">Fuel Type:</span>
+                <span id="shareFuelType">—</span>
+              </div>
+            </div>
+            <div class="summary-footer">
+              Calculated on <span id="shareDate">—</span>
+            </div>
+          </div>
+
+          <!-- Share Options -->
+          <div class="share-actions">
+            <button class="btn btn-whatsapp" onclick="shareWhatsApp()">
+              💬 Share on WhatsApp
+            </button>
+            <button class="btn btn-secondary" onclick="copyShareText()">
+              📋 Copy as Text
+            </button>
+            <button class="btn btn-secondary" onclick="downloadCard()">
+              💾 Download Card
+            </button>
+          </div>
+        </div>
+      </div>
 
     </div>
     <script src="script.js"></script>

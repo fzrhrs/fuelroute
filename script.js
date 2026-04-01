@@ -419,3 +419,104 @@ document.addEventListener('keydown', e => {
 refreshSubsidyLabels();
 refreshDieselLabels();
 loadFuelPrices();
+
+// ── Share Functionality ───────────────────────────────────────────────────
+function shareResult() {
+  const modal = document.getElementById('shareModal');
+  
+  // Populate share card with current results
+  const from = document.getElementById('fromInput').value;
+  const to = document.getElementById('toInput').value;
+  const litres = document.getElementById('resLitres').textContent;
+  const cost = document.getElementById('resCost').textContent;
+  const dist = document.getElementById('resDist').textContent;
+  const fuelType = document.getElementById('resFuelType').textContent;
+  const isReturn = document.getElementById('returnTrip').checked;
+  
+  // Get vehicle name
+  const carSelect = document.getElementById('carType');
+  const vehicleName = carSelect.options[carSelect.selectedIndex].text;
+  
+  document.getElementById('shareFrom').textContent = from;
+  document.getElementById('shareTo').textContent = to;
+  document.getElementById('shareLitres').textContent = litres;
+  document.getElementById('shareCost').textContent = cost;
+  document.getElementById('shareDist').textContent = dist + ' km';
+  document.getElementById('shareVehicle').textContent = vehicleName;
+  document.getElementById('shareFuelType').textContent = fuelType;
+  document.getElementById('shareUnit').textContent = isReturn ? 'litres (return)' : 'litres (one way)';
+  
+  const today = new Date().toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' });
+  document.getElementById('shareDate').textContent = today;
+  
+  modal.classList.add('show');
+}
+
+function closeShareModal() {
+  document.getElementById('shareModal').classList.remove('show');
+}
+
+function shareWhatsApp() {
+  const from = document.getElementById('fromInput').value;
+  const to = document.getElementById('toInput').value;
+  const litres = document.getElementById('resLitres').textContent;
+  const cost = document.getElementById('resCost').textContent;
+  const dist = document.getElementById('resDist').textContent;
+  const fuelType = document.getElementById('resFuelType').textContent;
+  const isReturn = document.getElementById('returnTrip').checked;
+  
+  const tripType = isReturn ? 'Return Trip' : 'One-Way Trip';
+  
+  const message = `🚗 *FuelRoute Trip Estimate*\n\n` +
+    `📍 *Route:* ${from} → ${to}\n` +
+    `📏 *Distance:* ${dist} km\n` +
+    `⛽ *Fuel Required:* ${litres}L ${isReturn ? '(return)' : '(one way)'}\n` +
+    `💰 *Est. Cost:* ${cost}\n` +
+    `🚙 *Fuel Type:* ${fuelType}\n\n` +
+    `Calculated via FuelRoute — Fuel cost calculator for Malaysia`;
+  
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  window.open(whatsappUrl, '_blank');
+}
+
+function copyShareText() {
+  const from = document.getElementById('fromInput').value;
+  const to = document.getElementById('toInput').value;
+  const litres = document.getElementById('resLitres').textContent;
+  const cost = document.getElementById('resCost').textContent;
+  const dist = document.getElementById('resDist').textContent;
+  const fuelType = document.getElementById('resFuelType').textContent;
+  const isReturn = document.getElementById('returnTrip').checked;
+  
+  const carSelect = document.getElementById('carType');
+  const vehicleName = carSelect.options[carSelect.selectedIndex].text;
+  
+  const text = `FuelRoute Trip Estimate\n\n` +
+    `Route: ${from} → ${to}\n` +
+    `Distance: ${dist} km\n` +
+    `Fuel Required: ${litres}L ${isReturn ? '(return)' : '(one way)'}\n` +
+    `Est. Cost: ${cost}\n` +
+    `Vehicle: ${vehicleName}\n` +
+    `Fuel Type: ${fuelType}\n\n` +
+    `Calculated via FuelRoute — Fuel cost calculator for Malaysia`;
+  
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '✓ Copied!';
+    setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+  }).catch(err => {
+    alert('Failed to copy to clipboard');
+  });
+}
+
+function downloadCard() {
+  // For now, we'll use html2canvas library to convert the card to image
+  // This is a placeholder - you'll need to include html2canvas library
+  alert('Download feature coming soon! For now, you can take a screenshot of the summary card or use WhatsApp/Copy options.');
+}
+
+// Close modal on escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeShareModal();
+});
