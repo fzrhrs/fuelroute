@@ -205,12 +205,13 @@ async function calculate() {
     document.getElementById('resFuelType').textContent = LABEL[ft] || ft;
     document.getElementById('resFuelPrice').textContent = 'RM' + price.toFixed(2) + ' / litre';
     document.getElementById('resCost').textContent     = 'RM '+cost.toFixed(2);
-    document.getElementById('lblFrom').textContent     = document.getElementById('fromInput').value.split(',')[0];
-    document.getElementById('lblTo').textContent       = document.getElementById('toInput').value.split(',')[0];
+    document.getElementById('lblFrom').textContent     = document.getElementById('fromInput').value;
+    document.getElementById('lblTo').textContent       = document.getElementById('toInput').value;
     res.classList.add('show');
     res.scrollIntoView({behavior:'smooth',block:'nearest'});
-    // Show BUDI planner only if user selected BUDI95
-    showBudiPlanner(subsidyChoice === 'budi95');
+    // Show BUDI planner only if user selected BUDI95 AND fuel type is RON95
+    const showBudi = subsidyChoice === 'budi95' && (ft === 'ron95_budi95' || ft === 'ron95_general' || ft === 'ron97');
+    showBudiPlanner(showBudi);
   } catch(e){
     err.textContent='⚠ '+e.message; err.classList.add('show');
   } finally {
@@ -229,48 +230,46 @@ function calcBudi() {
   const litresPerTrip = parseFloat(document.getElementById('resLitres').textContent);
   if (!litresPerTrip || isNaN(litresPerTrip)) return;
 
-  const tripType    = document.getElementById('tripType').value;
-  const workDays    = parseInt(document.getElementById('workDays').value);
-  const weeks       = parseInt(document.getElementById('weeksInMonth').value);
-  const extraTrips  = parseInt(document.getElementById('extraTrips').value) || 0;
+  const tripsPerWeek = parseInt(document.getElementById('tripType').value);
+  const weeks = parseInt(document.getElementById('weeksInMonth').value);
+  const extraTrips = parseInt(document.getElementById('extraTrips').value) || 0;
 
-  const tripsPerDay    = tripType === 'roundtrip' ? 2 : 1;
-  const commuteTrips   = workDays * weeks * tripsPerDay;
-  const totalTrips     = commuteTrips + extraTrips;
-  const totalLitres    = totalTrips * litresPerTrip;
+  const commuteTrips = tripsPerWeek * weeks;
+  const totalTrips = commuteTrips + extraTrips;
+  const totalLitres = totalTrips * litresPerTrip;
 
-  const BUDI_LIMIT     = 200;
-  const BUDI_PRICE     = PRICES.ron95_budi95;
-  const GENERAL_PRICE  = PRICES.ron95_general;
+  const BUDI_LIMIT = 200;
+  const BUDI_PRICE = PRICES.ron95_budi95;
+  const GENERAL_PRICE = PRICES.ron95_general;
 
-  const budiLitres     = Math.min(totalLitres, BUDI_LIMIT);
-  const generalLitres  = Math.max(0, totalLitres - BUDI_LIMIT);
+  const budiLitres = Math.min(totalLitres, BUDI_LIMIT);
+  const generalLitres = Math.max(0, totalLitres - BUDI_LIMIT);
 
-  const budiCost       = budiLitres * BUDI_PRICE;
-  const generalCost    = generalLitres * GENERAL_PRICE;
-  const totalCost      = budiCost + generalCost;
+  const budiCost = budiLitres * BUDI_PRICE;
+  const generalCost = generalLitres * GENERAL_PRICE;
+  const totalCost = budiCost + generalCost;
 
-  const pct            = Math.min(100, (totalLitres / BUDI_LIMIT) * 100);
-  const quotaColor     = pct >= 100 ? 'var(--accent2)' : pct >= 80 ? '#e6a817' : 'var(--accent)';
+  const pct = Math.min(100, (totalLitres / BUDI_LIMIT) * 100);
+  const quotaColor = pct >= 100 ? 'var(--accent2)' : pct >= 80 ? '#e6a817' : 'var(--accent)';
 
-  document.getElementById('bTotalTrips').textContent    = totalTrips;
-  document.getElementById('bTotalLitres').textContent   = totalLitres.toFixed(1);
-  document.getElementById('bQuotaUsed').textContent     = budiLitres.toFixed(1) + 'L';
-  document.getElementById('bQuotaUsed').style.color     = quotaColor;
-  document.getElementById('bQuotaPct').textContent      = pct.toFixed(0) + '%';
-  document.getElementById('bProgressBar').style.width   = pct + '%';
+  document.getElementById('bTotalTrips').textContent = totalTrips;
+  document.getElementById('bTotalLitres').textContent = totalLitres.toFixed(1);
+  document.getElementById('bQuotaUsed').textContent = budiLitres.toFixed(1) + 'L';
+  document.getElementById('bQuotaUsed').style.color = quotaColor;
+  document.getElementById('bQuotaPct').textContent = pct.toFixed(0) + '%';
+  document.getElementById('bProgressBar').style.width = pct + '%';
   document.getElementById('bProgressBar').style.background = quotaColor;
 
-  document.getElementById('bCostBudi').textContent      = 'RM ' + budiCost.toFixed(2);
-  document.getElementById('bLitresBudi').textContent    = budiLitres.toFixed(1) + ' litres';
-  document.getElementById('bCostGeneral').textContent   = generalLitres > 0 ? 'RM ' + generalCost.toFixed(2) : 'RM 0.00';
+  document.getElementById('bCostBudi').textContent = 'RM ' + budiCost.toFixed(2);
+  document.getElementById('bLitresBudi').textContent = budiLitres.toFixed(1) + ' litres';
+  document.getElementById('bCostGeneral').textContent = generalLitres > 0 ? 'RM ' + generalCost.toFixed(2) : 'RM 0.00';
   document.getElementById('bLitresGeneral').textContent = generalLitres > 0 ? generalLitres.toFixed(1) + ' litres (over quota)' : 'Within quota';
-  document.getElementById('bTotalCost').textContent     = 'RM ' + totalCost.toFixed(2);
+  document.getElementById('bTotalCost').textContent = 'RM ' + totalCost.toFixed(2);
 
   // Savings vs if you paid general price for everything
-  const savingsBox   = document.getElementById('bSavingsBox');
-  const fullGeneral  = totalLitres * GENERAL_PRICE;
-  const savings      = fullGeneral - totalCost;
+  const savingsBox = document.getElementById('bSavingsBox');
+  const fullGeneral = totalLitres * GENERAL_PRICE;
+  const savings = fullGeneral - totalCost;
   if (savings > 0) {
     savingsBox.style.display = 'block';
     savingsBox.innerHTML =

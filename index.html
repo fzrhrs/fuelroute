@@ -152,7 +152,7 @@
             <span class="route-chip chip-to" id="lblTo">—</span>
           </div>
           <div class="result-value" id="resLitres">—</div>
-          <div class="result-unit">Litres estimated</div>
+          <div class="result-unit">Litres estimated for one-way</div>
         </div>
         <div class="stats-grid">
           <div class="stat-box">
@@ -188,35 +188,30 @@
 
           <div class="budi-form-grid">
             <div>
-              <div class="input-label">Trip Type</div>
+              <div class="input-label">Trips per week</div>
               <select id="tripType" onchange="calcBudi()">
-                <option value="roundtrip">Round trip (e.g. home → work → home)</option>
-                <option value="oneway">One way only</option>
+                <option value="12">Mon-Sat return trips (12 trips/week)</option>
+                <option value="10" selected>Mon-Fri return trips (10 trips/week)</option>
+                <option value="6">3 times a week return trips</option>
+                <option value="4">2 times a week return trips</option>
+                <option value="2">Weekly return trip</option>
               </select>
             </div>
             <div>
-              <div class="input-label">Working days per week</div>
-              <select id="workDays" onchange="calcBudi()">
-                <option value="5">5 days (Mon–Fri)</option>
-                <option value="6">6 days (Mon–Sat)</option>
-                <option value="4">4 days</option>
-                <option value="3">3 days</option>
+              <div class="input-label">Weeks in this month</div>
+              <select id="weeksInMonth" onchange="calcBudi()">
+                <option value="2">2 weeks (twice a month)</option>
+                <option value="4" selected>4 weeks (weekly)</option>
+                <option value="5">5 weeks (longer month)</option>
               </select>
             </div>
           </div>
 
           <div class="budi-form-grid">
             <div>
-              <div class="input-label">Weeks in this month</div>
-              <select id="weeksInMonth" onchange="calcBudi()">
-                <option value="4">4 weeks</option>
-                <option value="5">5 weeks (longer month)</option>
-              </select>
-            </div>
-            <div>
-              <div class="input-label">Extra non-work trips this month</div>
+              <div class="input-label">Extra trips this month</div>
               <input type="number" id="extraTrips" value="0" min="0" max="60" onchange="calcBudi()" oninput="calcBudi()">
-              <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:5px;letter-spacing:1px;">One-way trips (e.g. weekend outings)</div>
+              <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:5px;letter-spacing:1px;">Additional trips (weekend outings, etc.)</div>
             </div>
           </div>
 
