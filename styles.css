@@ -83,7 +83,7 @@ select{cursor:pointer;
 .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;
   background:var(--accent);color:#ffffff;border:none;border-radius:2px;
   font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;
-  cursor:pointer;transition:background .2s,transform .1s;margin-top:32px;}
+  cursor:pointer;transition:background .2s,transform .1s;}
 .btn:hover{background:#155c32;}
 .btn:active{transform:scale(.99);}
 .btn:disabled{opacity:.4;cursor:not-allowed;}
