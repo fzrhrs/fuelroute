@@ -35,28 +35,28 @@ async function loadFuelPrices() {
 }
 
 // ── Car data ───────────────────────────────────────────────────────────────
-// Conditions index: 0=city 1=mixed 2=highway 3=hilly 4=mountain
+// Conditions index: 0=city 1=mixed 2=highway 3=hilly/mountainous
 const CARS = {
-  axia:      {f:'petrol',  r:[10.5, 8.5,  7.0, 11.5, 14.0]},
-  myvi:      {f:'petrol',  r:[13.0,10.5,  8.5, 13.5, 16.5]},
-  ativa:     {f:'petrol',  r:[14.5,12.0,  9.5, 15.0, 18.0]},
-  saga:      {f:'petrol',  r:[13.0,10.5,  8.5, 13.5, 16.5]},
-  x50:       {f:'petrol', r:[14.0,11.5,  9.0, 14.5, 17.5]},
-  x70:       {f:'petrol', r:[15.5,13.0, 10.5, 16.0, 19.5]},
-  city:      {f:'petrol',  r:[13.0,10.5,  8.5, 13.5, 16.5]},
-  civic:     {f:'petrol',  r:[14.0,11.5,  9.0, 14.5, 17.5]},
-  crv:       {f:'petrol', r:[15.5,13.0, 10.5, 16.0, 19.5]},
-  vios:      {f:'petrol',  r:[13.5,11.0,  9.0, 14.0, 17.0]},
-  camry:     {f:'petrol',  r:[15.0,12.5, 10.0, 15.5, 19.0]},
-  hilux:     {f:'diesel', r:[14.0,11.5,  9.5, 15.0, 18.5]},
-  fortuner_d:{f:'diesel', r:[14.5,12.0, 10.0, 15.5, 19.0]},
-  alphard:   {f:'petrol', r:[18.0,15.5, 13.0, 19.5, 23.0]},
-  hiace:     {f:'diesel', r:[14.0,11.5,  9.5, 15.0, 18.5]},
-  triton:    {f:'diesel', r:[15.0,12.5, 10.5, 16.0, 19.5]},
-  navara:    {f:'diesel', r:[14.5,12.0, 10.0, 15.5, 19.0]},
-  '4wd_d':   {f:'diesel', r:[20.0,17.0, 14.0, 21.5, 25.5]},
+  axia:      {f:'petrol',  r:[10.5, 8.5,  7.0, 14.0]},
+  myvi:      {f:'petrol',  r:[13.0,10.5,  8.5, 16.5]},
+  ativa:     {f:'petrol',  r:[14.5,12.0,  9.5, 18.0]},
+  saga:      {f:'petrol',  r:[13.0,10.5,  8.5, 16.5]},
+  x50:       {f:'petrol', r:[14.0,11.5,  9.0, 17.5]},
+  x70:       {f:'petrol', r:[15.5,13.0, 10.5, 19.5]},
+  city:      {f:'petrol',  r:[13.0,10.5,  8.5, 16.5]},
+  civic:     {f:'petrol',  r:[14.0,11.5,  9.0, 17.5]},
+  crv:       {f:'petrol', r:[15.5,13.0, 10.5, 19.5]},
+  vios:      {f:'petrol',  r:[13.5,11.0,  9.0, 17.0]},
+  camry:     {f:'petrol',  r:[15.0,12.5, 10.0, 19.0]},
+  hilux:     {f:'diesel', r:[14.0,11.5,  9.5, 18.5]},
+  fortuner_d:{f:'diesel', r:[14.5,12.0, 10.0, 19.0]},
+  alphard:   {f:'petrol', r:[18.0,15.5, 13.0, 23.0]},
+  hiace:     {f:'diesel', r:[14.0,11.5,  9.5, 18.5]},
+  triton:    {f:'diesel', r:[15.0,12.5, 10.5, 19.5]},
+  navara:    {f:'diesel', r:[14.5,12.0, 10.0, 19.0]},
+  '4wd_d':   {f:'diesel', r:[20.0,17.0, 14.0, 25.5]},
 };
-const CI = {city:0,mixed:1,highway:2,hilly:3,mountain:4};
+const CI = {city:0,mixed:1,highway:2,hilly:3};
 const LABEL = {petrol:'Petrol',ron95:'RON95',ron95_general:'RON95',ron95_budi95:'RON95 (BUDI95)',ron97:'RON97',diesel:'Diesel'};
 const PCLS  = {petrol:'pill-ron95',ron95:'pill-ron95',ron97:'pill-ron97',diesel:'pill-diesel'};
 

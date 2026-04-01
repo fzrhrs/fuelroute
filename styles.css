@@ -17,7 +17,7 @@ header{display:flex;align-items:flex-end;gap:16px;margin-bottom:60px;}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:72px;line-height:1;letter-spacing:2px;}
 .logo span{color:var(--accent);}
 .tagline{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:3px;margin-bottom:10px;line-height:1.6;}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:2px;padding:36px;margin-bottom:24px;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:2px;padding:36px;margin-bottom:20px;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.06);}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
 .section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:24px;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 @media(max-width:640px){.section-label{font-size:9px;letter-spacing:2px;white-space:normal;overflow-wrap:break-word;}}
@@ -62,8 +62,8 @@ select{cursor:pointer;
 .subsidy-btn.active{border-color:var(--accent);background:rgba(232,255,71,.08);color:var(--accent);}
 
 /* Condition grid */
-.cond-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px;}
-@media(max-width:640px){.cond-grid{grid-template-columns:repeat(3,1fr);}.logo{font-size:48px;letter-spacing:1px;}}
+.cond-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;}
+@media(max-width:640px){.cond-grid{grid-template-columns:repeat(2,1fr);}.logo{font-size:48px;letter-spacing:1px;}}
 @media(max-width:400px){.cond-grid{grid-template-columns:repeat(2,1fr);}.logo{font-size:36px;letter-spacing:0.5px;}}
 @media(max-width:320px){.logo{font-size:28px;letter-spacing:0;}}
 .cond-btn{background:var(--surface);border:1px solid var(--border);border-radius:2px;color:var(--muted);
@@ -136,6 +136,10 @@ footer a:hover{color:var(--accent);}
 
 /* BUDI planner */
 #budiPlanner .card { margin-top: 0; }
+#budiPlanner { padding-top: 20px; }
+@media(max-width:640px){#budiPlanner { padding-top: 15px; }}
+.budi-description { text-align: justify; }
+#bSavingsBox { text-align: justify; }
 /* BUDI planner responsive grids */
 .budi-form-grid {
   display: grid;
