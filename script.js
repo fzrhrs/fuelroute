@@ -483,15 +483,30 @@ function shareWhatsApp() {
   const fuelType = document.getElementById('resFuelType').textContent;
   const isReturn = document.getElementById('returnTrip').checked;
   
-  const tripType = isReturn ? 'Return Trip' : 'One-Way Trip';
-  
-  const message = `🚗 *FuelRoute Trip Estimate*\n\n` +
+  let message = `🚗 *FuelRoute Trip Estimate*\n\n` +
     `📍 *Route:* ${from} → ${to}\n` +
     `📏 *Distance:* ${dist} km\n` +
     `⛽ *Fuel Required:* ${litres}L ${isReturn ? '(return)' : '(one way)'}\n` +
     `💰 *Est. Cost:* ${cost}\n` +
-    `🚙 *Fuel Type:* ${fuelType}\n\n` +
-    `Calculated via FuelRoute — Fuel cost calculator for Malaysia`;
+    `🚙 *Fuel Type:* ${fuelType}\n`;
+  
+  // Add monthly commute summary if visible
+  const monthlyResult = document.getElementById('monthlyResult');
+  if (monthlyResult && monthlyResult.style.display !== 'none') {
+    const mTotalTrips = document.getElementById('mTotalTrips').textContent;
+    const mTotalLitres = document.getElementById('mTotalLitres').textContent;
+    const mTotalCost = document.getElementById('mTotalCost').textContent;
+    const mFuelType = document.getElementById('mFuelTypeNote').textContent;
+    
+    message += `\n📅 *Monthly Commute Summary*\n` +
+      `🔄 *Total Trips:* ${mTotalTrips}\n` +
+      `⛽ *Total Fuel:* ${mTotalLitres}L\n` +
+      `💰 *Monthly Cost:* ${mTotalCost}\n` +
+      `🚙 *Fuel Type:* ${mFuelType}\n`;
+  }
+  
+  message += `\nCalculated via FuelRoute — Fuel cost calculator for Malaysia\n` +
+    `https://fzrhrs.github.io/fuelroute`;
   
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
   window.open(whatsappUrl, '_blank');
