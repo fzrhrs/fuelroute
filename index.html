@@ -135,6 +135,33 @@
 
   /* BUDI planner */
   #budiPlanner .card { margin-top: 0; }
+  /* BUDI planner responsive grids */
+  .budi-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .budi-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 540px) {
+    .budi-form-grid {
+      grid-template-columns: 1fr;
+    }
+    .budi-stats-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 360px) {
+    .budi-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
 
 </style>
 </head>
@@ -319,10 +346,10 @@
     <div class="card">
       <div class="section-label">// BUDI95 Monthly Planner</div>
       <p style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">
-        Starting 1 April 2026, eligible BUDI95 users get a maximum of <strong style="color:var(--accent)">200 litres/month</strong> at RM1.99/L. Any usage beyond that is charged at the general market price of RM2.60/L. Enter your commute pattern below to see your monthly fuel cost.
+        Starting 1 April 2025, eligible BUDI95 users get a maximum of <strong style="color:var(--accent)">200 litres/month</strong> at RM1.99/L. Any usage beyond that is charged at the general market price of RM2.60/L. Enter your commute pattern below to see your monthly fuel cost.
       </p>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+      <div class="budi-form-grid">
         <div>
           <div class="input-label">Trip Type</div>
           <select id="tripType" onchange="calcBudi()">
@@ -341,7 +368,7 @@
         </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
+      <div class="budi-form-grid">
         <div>
           <div class="input-label">Weeks in this month</div>
           <select id="weeksInMonth" onchange="calcBudi()">
@@ -359,7 +386,7 @@
       <!-- BUDI result -->
       <div id="budiResult" style="display:none">
         <div style="background:var(--subtle);border:1px solid var(--border);border-radius:2px;padding:24px;margin-bottom:16px">
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+          <div class="budi-stats-grid">
             <div>
               <div class="input-label">Total trips</div>
               <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--text)" id="bTotalTrips">—</div>
@@ -392,7 +419,7 @@
           </div>
 
           <!-- Cost breakdown -->
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          <div class="budi-stats-grid">
             <div style="background:var(--panel);border:1px solid var(--border);border-radius:2px;padding:16px">
               <div class="input-label">At BUDI95 (RM1.99)</div>
               <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent)" id="bCostBudi">—</div>
@@ -419,18 +446,17 @@
   </div>
 
   <footer>
+    Built by <a href="https://github.com/fzrhrs" target="_blank">@fzrhrs</a>
+    <br>
     Fuel prices from
     <a href="https://data.gov.my/data-catalogue/fuelprice" target="_blank">data.gov.my — Price of Petroleum &amp; Diesel</a>
     · Ministry of Finance, Malaysia · Licensed under
     <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>
     <br>
     Route distances via <a href="https://project-osrm.org" target="_blank">OSRM</a> ·
-
-    Location search via <a href="https://nominatim.openstreetmap.org" target="_blank">OpenStreetMap Nominatim</a> ·
+    Location search via <a href="https://nominatim.openstreetmap.org" target="_blank">OpenStreetMap Nominatim</a>
     <br>
     Fuel estimates are approximate. Actual consumption varies with load, vehicle condition, and driving style.
-    <br>
-    Built by <a href="https://github.com/fzrhrs" target="_blank">@fzrhrs</a>.
   </footer>
 
 </div>
