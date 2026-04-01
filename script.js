@@ -358,8 +358,8 @@ function calcMonthly() {
   // Cost based on current fuel type
   const isBudi95       = actualFuelType === 'ron95_budi95';
   const BUDI_LIMIT     = 200;
-  const BUDI_PRICE     = PRICES.ron95_budi95   || 1.99;
-  const GENERAL_PRICE  = PRICES.ron95_general  || 2.60;
+  const BUDI_PRICE     = PRICES.ron95_budi95;
+  const GENERAL_PRICE  = PRICES.ron95_general;
 
   // Calculate total cost - BUDI95 needs special handling for quota
   let totalCost, pricePerLitre;
