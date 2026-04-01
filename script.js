@@ -448,11 +448,13 @@ function shareResult() {
   // Populate share card with current results
   const from = document.getElementById('fromInput').value;
   const to = document.getElementById('toInput').value;
-  const litres = document.getElementById('resLitres').textContent;
-  const cost = document.getElementById('resCost').textContent;
   const dist = document.getElementById('resDist').textContent;
   const fuelType = document.getElementById('resFuelType').textContent;
   const isReturn = document.getElementById('returnTrip').checked;
+  
+  // Use return trip values if return is checked, otherwise one-way
+  const litres = isReturn ? document.getElementById('resReturnLitres').textContent : document.getElementById('resLitres').textContent;
+  const cost = isReturn ? document.getElementById('resReturnCost').textContent : document.getElementById('resCost').textContent;
   
   // Get vehicle name
   const carSelect = document.getElementById('carType');
