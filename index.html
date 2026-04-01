@@ -145,6 +145,17 @@
           </div>
         </div>
 
+        <!-- Return trip toggle -->
+        <div class="return-toggle" id="returnToggle">
+          <label class="toggle-wrap">
+            <input type="checkbox" id="returnTrip" onchange="calculate()" disabled>
+            <span class="toggle-track">
+              <span class="toggle-thumb"></span>
+            </span>
+            <span class="toggle-label">Include return journey <span class="toggle-sub">(doubles fuel &amp; cost)</span></span>
+          </label>
+        </div>
+
         <button class="btn" id="calcBtn" onclick="calculate()">⛽ CALCULATE FUEL</button>
         <div class="error-msg" id="errMsg"></div>
       </div>
@@ -159,9 +170,16 @@
             <span class="route-chip chip-to" id="lblTo">—</span>
           </div>
           <div class="result-value" id="resLitres">—</div>
-          <div class="result-unit">Litres estimated for one-way</div>
+          <div class="result-unit" id="resUnit">Litres — one way</div>
+          <div class="return-result" id="returnRow" style="display:none">
+            <div class="return-divider"></div>
+            <div class="return-label">Return trip total</div>
+            <div class="return-value" id="resReturnLitres">—</div>
+            <div class="result-unit">Litres — both ways</div>
+          </div>
         </div>
-        <div class="stats-grid">
+        <!-- Row 1: trip info -->
+        <div class="stats-grid stats-row-info">
           <div class="stat-box">
             <div class="stat-label">Distance</div>
             <div class="stat-value" id="resDist">—</div>
@@ -177,10 +195,18 @@
             <div class="stat-value" id="resFuelType">—</div>
             <div class="stat-sub" id="resFuelPrice">—</div>
           </div>
+        </div>
+        <!-- Row 2: cost -->
+        <div class="stats-grid stats-row-cost">
           <div class="stat-box stat-cost">
             <div class="stat-label">Est. Fuel Cost</div>
             <div class="stat-value" id="resCost">—</div>
-            <div class="stat-sub">Malaysian Ringgit</div>
+            <div class="stat-sub" id="resCostSub">one way</div>
+          </div>
+          <div class="stat-box stat-return" id="returnCostBox" style="display:none">
+            <div class="stat-label">Return Trip Cost</div>
+            <div class="stat-value" id="resReturnCost">—</div>
+            <div class="stat-sub">both ways</div>
           </div>
         </div>
       </div>

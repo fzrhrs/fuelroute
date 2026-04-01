@@ -273,14 +273,35 @@ async function calculate() {
     const litres = (km * l100) / 100;
     const cost   = litres * price;
 
+    const isReturn = document.getElementById('returnTrip').checked;
+
     document.getElementById('resLitres').textContent    = litres.toFixed(2);
+    document.getElementById('resUnit').textContent      = 'Litres — one way';
     document.getElementById('resDist').textContent      = km.toFixed(1);
     document.getElementById('resRate').textContent      = l100.toFixed(1);
     document.getElementById('resFuelType').textContent  = LABEL[ft] || ft;
     document.getElementById('resFuelPrice').textContent = 'RM' + price.toFixed(2) + ' / litre';
     document.getElementById('resCost').textContent      = 'RM ' + cost.toFixed(2);
+    document.getElementById('resCostSub').textContent   = 'one way';
     document.getElementById('lblFrom').textContent      = document.getElementById('fromInput').value;
     document.getElementById('lblTo').textContent        = document.getElementById('toInput').value;
+
+    // Return trip row
+    const returnRow     = document.getElementById('returnRow');
+    const returnCostBox = document.getElementById('returnCostBox');
+    if (isReturn) {
+      document.getElementById('resReturnLitres').textContent = (litres * 2).toFixed(2);
+      document.getElementById('resReturnCost').textContent   = 'RM ' + (cost * 2).toFixed(2);
+      returnRow.style.display     = 'block';
+      returnCostBox.style.display = 'block';
+    } else {
+      returnRow.style.display     = 'none';
+      returnCostBox.style.display = 'none';
+    }
+
+    // Enable and show the return toggle once we have a result
+    document.getElementById('returnTrip').disabled = false;
+    document.getElementById('returnToggle').classList.add('show');
 
     res.classList.add('show');
     res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
