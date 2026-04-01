@@ -111,6 +111,11 @@ let cond          = 'highway';
 let subsidyChoice = 'general';    // ron95 petrol grade choice
 let regionChoice  = 'peninsular'; // diesel region choice
 
+// Store last calculation results for monthly planner
+let lastCalcFuelType = null;
+let lastCalcPrice = null;
+let lastCalcCostPerTrip = null;
+
 function pickCond(btn) {
   document.querySelectorAll('.cond-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -273,6 +278,11 @@ async function calculate() {
     const litres = (km * l100) / 100;
     const cost   = litres * price;
 
+    // Store for monthly planner
+    lastCalcFuelType = ft;
+    lastCalcPrice = price;
+    lastCalcCostPerTrip = cost;
+
     const isReturn = document.getElementById('returnTrip').checked;
 
     document.getElementById('resLitres').textContent    = litres.toFixed(2);
@@ -340,22 +350,20 @@ function calcMonthly() {
   const totalTrips   = commuteTrips + extraTrips;
   const totalLitres  = totalTrips * litresPerTrip;
 
+  // Use the actual fuel type and price from the last calculation
+  const actualFuelType = lastCalcFuelType || 'ron95_general';
+  const actualPrice    = lastCalcPrice || PRICES.ron95_general;
+  const costPerTrip    = lastCalcCostPerTrip || 0;
+  
   // Cost based on current fuel type
-  const isBudi95       = subsidyChoice === 'budi95';
+  const isBudi95       = actualFuelType === 'ron95_budi95';
   const BUDI_LIMIT     = 200;
   const BUDI_PRICE     = PRICES.ron95_budi95   || 1.99;
   const GENERAL_PRICE  = PRICES.ron95_general  || 2.60;
 
-  let totalCost, pricePerLitre;
-  if (isBudi95) {
-    const budiLitres    = Math.min(totalLitres, BUDI_LIMIT);
-    const generalLitres = Math.max(0, totalLitres - BUDI_LIMIT);
-    totalCost    = (budiLitres * BUDI_PRICE) + (generalLitres * GENERAL_PRICE);
-    pricePerLitre = totalCost / totalLitres; // effective rate
-  } else {
-    pricePerLitre = getPrice(CARS[document.getElementById('carType').value]?.f || 'petrol');
-    totalCost     = totalLitres * pricePerLitre;
-  }
+  // Use cost per trip to avoid rounding discrepancies
+  const totalCost = totalTrips * costPerTrip;
+  const pricePerLitre = totalLitres > 0 ? (totalCost / totalLitres) : actualPrice;
 
   const weeklyCost = (totalCost / weeks);
   const perTrip    = totalLitres > 0 ? (totalCost / totalTrips) : 0;
@@ -365,7 +373,7 @@ function calcMonthly() {
   document.getElementById('mTotalTrips').textContent  = totalTrips;
   document.getElementById('mTotalLitres').textContent = totalLitres.toFixed(1);
   document.getElementById('mTotalCost').textContent   = 'RM ' + totalCost.toFixed(2);
-  document.getElementById('mFuelTypeNote').textContent= LABEL[subsidyChoice === 'ron97' ? 'ron97' : subsidyChoice === 'budi95' ? 'ron95_budi95' : 'ron95_general'] || 'petrol';
+  document.getElementById('mFuelTypeNote').textContent= LABEL[actualFuelType] || actualFuelType;
   document.getElementById('mWeeklyCost').textContent  = 'RM ' + weeklyCost.toFixed(2);
   document.getElementById('mPerTrip').textContent     = 'RM ' + perTrip.toFixed(2);
   document.getElementById('mYearlyCost').textContent  = 'RM ' + yearlyCost.toFixed(0);
